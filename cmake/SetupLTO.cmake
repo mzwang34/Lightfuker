@@ -1,0 +1,36 @@
+if(CMAKE_VERSION VERSION_GREATER 3.9)
+    option(LW_USE_LTO "Use linked time optimization if available in release builds" ON)
+
+    if(LW_USE_LTO)
+        include(CheckLinkerFlag)
+        set(CUSTOM_LTO_FLAGS "-flto=auto") # Minor workaround until https://gitlab.kitware.com/cmake/cmake/-/issues/26353 gets through
+        check_linker_flag(CXX "${CUSTOM_LTO_FLAGS}" HAS_CUSTOM_LTO_FLAGS)
+
+        if(HAS_CUSTOM_LTO_FLAGS)
+            set(LTO_ON TRUE)
+        else()
+            include(CheckIPOSupported)
+            check_ipo_supported(RESULT supported OUTPUT error)
+
+            if(supported)
+                set(LTO_ON TRUE)
+            else()
+                message(WARNING "IPO / LTO not available: ${error}")
+            endif()
+        endif()
+
+        if(LTO_ON)
+            message(STATUS "IPO / LTO enabled")
+        endif()
+    endif()
+endif()
+
+function(add_lto TARGET)
+    if(LTO_ON)
+        if(HAS_CUSTOM_LTO_FLAGS)
+            target_link_options(${TARGET} PRIVATE "$<$<CONFIG:Release>:${CUSTOM_LTO_FLAGS}>")
+        else()
+            set_property(TARGET ${TARGET} PROPERTY INTERPROCEDURAL_OPTIMIZATION_RELEASE TRUE)
+        endif()
+    endif()
+endfunction()
