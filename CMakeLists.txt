@@ -30,13 +30,16 @@ endif()
 
 set(CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR})
 
-# Make clangd work out of the box
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-file(CREATE_LINK
-  "${CMAKE_BINARY_DIR}/compile_commands.json"
-  "${CMAKE_SOURCE_DIR}/compile_commands.json"
-  SYMBOLIC
-)
+# Make clangd work out of the box on Linux.
+# Apparently, it fails on Windows for most students.
+if(NOT WIN32)
+    set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+    file(CREATE_LINK
+        "${CMAKE_BINARY_DIR}/compile_commands.json"
+        "${CMAKE_SOURCE_DIR}/compile_commands.json"
+        SYMBOLIC
+    )
+endif()
 
 # Warn students if some obscure systems are used
 if(MINGW)
