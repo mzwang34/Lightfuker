@@ -1,10 +1,15 @@
 include(CheckCXXCompilerFlag)
 
-option(LW_DISABLE_FASTMATH "Disable math optimizations [Not recommended]" OFF)
+option(LW_ENABLE_FASTMATH "Enable unsafe math optimizations" OFF)
 
-if(NOT LW_DISABLE_FASTMATH)
+if(LW_ENABLE_FASTMATH)
 	if((CMAKE_CXX_COMPILER_ID MATCHES "MSVC") OR (CMAKE_CXX_COMPILER_FRONTEND_VARIANT MATCHES "MSVC"))
-		set(FF_FLAGS /fp:fast)
+		#set(FF_FLAGS /fp:fast) #< Disables Inf which is needed!
+		set(FF_FLAGS /fp:contract) #< Only enables contractions like fma
+		check_cxx_compiler_flag(${FF_FLAGS} HAS_CONTRACT)
+		if(NOT HAS_CONTRACT)
+			set(FF_FLAGS )
+		endif()
     elseif((CMAKE_CXX_COMPILER_ID MATCHES "Clang") OR (CMAKE_CXX_COMPILER_ID MATCHES "GNU"))
 		set(FF_FLAGS -funsafe-math-optimizations -fno-rounding-math -fno-math-errno)
 	endif()
