@@ -95,7 +95,7 @@ file(GLOB_RECURSE SOURCE_FILES CONFIGURE_DEPENDS
 set(MY_TARGET_NAME unnamed) # Change `unnamed` to your favorite executable name
 # ######################
 
-find_package(OpenImageDenoise)
+find_package(OpenImageDenoise QUIET)
 
 add_executable(${MY_TARGET_NAME} ${SOURCE_FILES})
 target_compile_definitions(${MY_TARGET_NAME} PUBLIC "${FEATURES};${EXTRA_DEFINES}")
@@ -117,8 +117,7 @@ set_target_properties(${MY_TARGET_NAME} PROPERTIES
 if(OpenImageDenoise_FOUND)
     target_link_libraries(${MY_TARGET_NAME} PRIVATE OpenImageDenoise)
     target_compile_definitions(${MY_TARGET_NAME} PRIVATE "LW_WITH_OIDN")
-else()
-    message(WARNING "No denoising support")
+    message(STATUS "Denoising support with OIDN enabled")
 endif()
 
 if(WIN32)
