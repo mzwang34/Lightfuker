@@ -76,6 +76,10 @@ struct SceneParser::RootNode : public SceneParser::Node {
         for (const auto &object : objectFutures) {
             sceneParser.m_objects.push_back(object.get());
         }
+
+        // Do not add our objects again in case this RootNode is re-used.
+        // (happens if the scene file is wrapped in a <lightwave /> tag!)
+        objectFutures.clear();
     }
 };
 
@@ -248,8 +252,8 @@ struct SceneParser::DefaultNode : public SceneParser::Node {
         } else if (attrKey == "value") {
             this->value = attrValue;
         } else {
-            lightwave_throw(
-                "unsupported attribute \"%s\" on <default />", attrKey);
+            lightwave_throw("unsupported attribute \"%s\" on <default />",
+                            attrKey);
         }
     }
 
@@ -431,6 +435,7 @@ std::string SceneParser::resolveVariables(const std::string &value) {
                     break;
                 varName += chr;
             }
+            i -= 1;
 
             auto value = sceneVariables.find(varName);
             if (value == sceneVariables.end())
