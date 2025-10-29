@@ -92,9 +92,9 @@ file(GLOB_RECURSE SOURCE_FILES CONFIGURE_DEPENDS
 )
 
 # ######################
-set(MY_TARGET_NAME unnamed) # Change `unnamed` to your favorite executable name
-# ######################
+set(MY_TARGET_NAME lightfuker) # Change `unnamed` to your favorite executable name
 
+# ######################
 find_package(OpenImageDenoise QUIET)
 
 add_executable(${MY_TARGET_NAME} ${SOURCE_FILES})
@@ -108,10 +108,10 @@ target_compile_features(${MY_TARGET_NAME} PUBLIC cxx_std_20)
 # Ensure the target is directly in the build directory. This is the default on Linux/Mac, but not Windows.
 # Pro Tip: You can commit this out to have Debug and Release builds at the same time on Windows. This will prevent the default parameters to work though.
 set_target_properties(${MY_TARGET_NAME} PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY_DEBUG          "${CMAKE_BINARY_DIR}"
-    RUNTIME_OUTPUT_DIRECTORY_RELEASE        "${CMAKE_BINARY_DIR}"
+    RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}"
+    RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}"
     RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO "${CMAKE_BINARY_DIR}"
-    RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL     "${CMAKE_BINARY_DIR}"
+    RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL "${CMAKE_BINARY_DIR}"
 )
 
 if(OpenImageDenoise_FOUND)
@@ -121,7 +121,7 @@ if(OpenImageDenoise_FOUND)
 endif()
 
 if(WIN32)
-  target_link_libraries(${MY_TARGET_NAME} PRIVATE wsock32 ws2_32)
+    target_link_libraries(${MY_TARGET_NAME} PRIVATE wsock32 ws2_32)
 endif()
 
 add_extra_options(${MY_TARGET_NAME})
