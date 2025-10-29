@@ -43,7 +43,7 @@ public:
         float t2 = (-b + sqrtDelta) * 0.5f / a;
         if (t1 > t2) std::swap(t1, t2);
 
-        float t = FLT_MAX;
+        float t = 1e30;
         if (t1 >= Epsilon) t = t1;
         if (t2 >= Epsilon && t2 < t) t = t2;
 
