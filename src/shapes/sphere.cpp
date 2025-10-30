@@ -4,8 +4,8 @@ namespace lightwave {
 class Sphere : public Shape {
     Point2 sphericalCoordinates(const Vector &v) const {
         Point2 result;
-        result.x() = atan2(v.z(), v.x()) * Inv2Pi + 0.5f;
-        result.y() = acos(v.y()) * InvPi;
+        result.x() = atan2(v.y(), v.x()) * Inv2Pi + 0.5f;
+        result.y() = acos(v.z()) * InvPi;
         return result;
     }
 
@@ -43,7 +43,7 @@ public:
         float t2 = (-b + sqrtDelta) * 0.5f / a;
         if (t1 > t2) std::swap(t1, t2);
 
-        float t = 1e30;
+        float t = Infinity;
         if (t1 >= Epsilon) t = t1;
         if (t2 >= Epsilon && t2 < t) t = t2;
 

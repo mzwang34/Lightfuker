@@ -83,16 +83,17 @@ protected:
         its.t = t;
         its.position = ray(t);
 
+        Vertex v_interp = Vertex::interpolate(Vector2(u, v), v0, v1, v2);
+        its.uv = v_interp.uv;
+        its.geometryNormal = e1.cross(e2).normalized();
         if (m_smoothNormals) {
-            Vertex v_interp = Vertex::interpolate(Vector2(u, v), v0, v1, v2);
             its.shadingNormal = v_interp.normal.normalized();
         } else {
-            its.shadingNormal = e1.cross(e2).normalized();
+            its.shadingNormal = its.geometryNormal;
         }
-        its.geometryNormal = e1.cross(e2).normalized();
         its.tangent = Frame(its.shadingNormal).tangent;
         its.pdf = 0.f; // TODO
-
+        
         return true;
     }
 
