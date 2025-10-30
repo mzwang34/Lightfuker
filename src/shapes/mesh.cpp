@@ -38,8 +38,6 @@ protected:
 
     bool intersect(int primitiveIndex, const Ray &ray, Intersection &its,
                    Sampler &rng) const override {
-        NOT_IMPLEMENTED
-
         // hints:
         // * use m_triangles[primitiveIndex] to get the vertex indices of the
         // triangle that should be intersected
@@ -48,6 +46,55 @@ protected:
         //   * make sure that your shading frame stays orthonormal!
         // * if m_smoothNormals is false, use the geometrical normal (can be
         // computed from the vertex positions)
+        Vector d = ray.direction;
+        Point o = ray.origin;
+        Vector3i vert_indices = m_triangles[primitiveIndex];
+
+        Vertex v0 = m_vertices[vert_indices[0]];
+        Vertex v1 = m_vertices[vert_indices[1]];
+        Vertex v2 = m_vertices[vert_indices[2]];
+
+        // (1 - u - v)* v0 + u * v1+ v * v2 = o + td
+        Vector e1 = v1.position - v0.position;
+        Vector e2 = v2.position - v0.position;
+
+        float detM = e1.dot(d.cross(e2));
+
+        if (detM == 0)
+            return false;
+        float invDetM = 1.f / detM;
+
+        Vector e_ori = o - v0.position;
+        float detMu  = e_ori.dot(d.cross(e2));
+        float u = detMu * invDetM;
+        if (u < 0 || u > 1)
+            return false;
+
+        float detMv = d.dot(e_ori.cross(e1));
+        float v = detMv * invDetM;
+        if (v < 0 || u + v > 1)
+            return false;
+
+        float t = e2.dot(e_ori.cross(e1)) * invDetM;
+
+        if (t < Epsilon || t > its.t)
+            return false;
+
+        its.t = t;
+        its.position = ray(t);
+
+        Vertex v_interp = Vertex::interpolate(Vector2(u, v), v0, v1, v2);
+        its.uv = v_interp.uv;
+        its.geometryNormal = e1.cross(e2).normalized();
+        if (m_smoothNormals) {
+            its.shadingNormal = v_interp.normal.normalized();
+        } else {
+            its.shadingNormal = its.geometryNormal;
+        }
+        its.tangent = Frame(its.shadingNormal).tangent;
+        its.pdf = 0.f; // TODO
+        
+        return true;
     }
 
     float transmittance(int primitiveIndex, const Ray &ray, float tMax,
@@ -57,11 +104,19 @@ protected:
     }
 
     Bounds getBoundingBox(int primitiveIndex) const override {
-        NOT_IMPLEMENTED
+        Bounds bounds;
+        bounds.empty();
+        Vector3i vert_indices = m_triangles[primitiveIndex];
+        bounds.extend(m_vertices[vert_indices[0]].position);
+        bounds.extend(m_vertices[vert_indices[1]].position);
+        bounds.extend(m_vertices[vert_indices[2]].position);
+        return bounds;
     }
 
     Point getCentroid(int primitiveIndex) const override {
-        NOT_IMPLEMENTED
+        Vector psum(0.f);
+        for (int i = 0; i < 3; i++) psum = psum + (Vector)m_vertices[m_triangles[primitiveIndex][i]].position;
+        return (1.f / 3.f) * psum;
     }
 
 public:
