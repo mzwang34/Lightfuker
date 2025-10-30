@@ -16,10 +16,8 @@ public:
     Color Li(const Ray &ray, Sampler &rng) override {
         if (m_variable == "normals") {
             Intersection its = m_scene->intersect(ray, rng);
-            Vector n;
-            if (its.background)
-                n = Vector(0.f);
-            else
+            Vector n (0.0f);
+            if (!its.background)
                 n = its.shadingNormal;
             n = (n + Vector(1.f)) * 0.5f;
             return Color(n);
