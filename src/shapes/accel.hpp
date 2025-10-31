@@ -239,9 +239,9 @@ class AccelerationStructure : public Shape {
     void binning(const Node &node, int &bestSplitAxis,
                  float &bestSplitPosition) {
         const int binning_size = 16;
-        float bestCost = FLT_MAX;
+        float bestCost = Infinity;
         for (int axis = 0; axis < 3; axis++) {
-            float boundsMin = FLT_MAX, boundsMax = FLT_MIN;
+            float boundsMin = Infinity, boundsMax = -Infinity;
             for (int i = 0; i < node.primitiveCount; i++) {
                 Point centriod = getCentroid(m_primitiveIndices[node.leftFirst + i]);
                 boundsMin = min(boundsMin, centriod[axis]);
