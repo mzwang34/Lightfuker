@@ -71,6 +71,11 @@ class AccelerationStructure : public Shape {
         }
     };
 
+    struct Bin {
+        Bounds bounds;
+        int primitiveCount = 0;
+    };
+
     /// @brief A list of all BVH nodes.
     std::vector<Node> m_nodes;
     /**
@@ -233,7 +238,54 @@ class AccelerationStructure : public Shape {
      */
     void binning(const Node &node, int &bestSplitAxis,
                  float &bestSplitPosition) {
-        NOT_IMPLEMENTED
+        const int binning_size = 16;
+        float bestCost = Infinity;
+        for (int axis = 0; axis < 3; axis++) {
+            float boundsMin = Infinity, boundsMax = -Infinity;
+            for (int i = 0; i < node.primitiveCount; i++) {
+                Point centriod = getCentroid(m_primitiveIndices[node.leftFirst + i]);
+                boundsMin = min(boundsMin, centriod[axis]);
+                boundsMax = max(boundsMax, centriod[axis]);
+            }
+            if (boundsMin == boundsMax) continue;
+
+            // populate the bins
+            Bin bin[binning_size];
+            float scale = binning_size / (boundsMax - boundsMin);
+            for (int i = 0; i < node.primitiveCount; i++) {
+                Point centriod = getCentroid(m_primitiveIndices[node.leftFirst + i]);
+                int binIdx = min(binning_size - 1, (int) ((centriod[axis] - boundsMin) * scale));
+                bin[binIdx].primitiveCount++;
+                bin[binIdx].bounds.extend(getBoundingBox(m_primitiveIndices[node.leftFirst + i])); 
+            }
+
+            float leftArea[binning_size - 1], rightArea[binning_size - 1];
+            int leftCount[binning_size - 1], rightCount[binning_size - 1];
+            Bounds leftBox, rightBox;
+            int leftSum = 0, rightSum = 0;
+            for (int i = 0; i < binning_size - 1; i++) {
+                leftSum += bin[i].primitiveCount;
+                leftCount[i] = leftSum;
+                leftBox.extend(bin[i].bounds);
+                leftArea[i] = surfaceArea(leftBox);
+
+                rightSum += bin[binning_size - 1 - i].primitiveCount;
+                rightCount[binning_size - 2 - i] = rightSum;
+                rightBox.extend(bin[binning_size - 1 - i].bounds);
+                rightArea[binning_size - 2 - i] = surfaceArea(rightBox);
+            }
+
+            scale = 1.f / scale;
+            for (int i = 0; i < binning_size - 1; i++) {
+                if (leftCount[i] == 0 || rightCount[i] == 0) continue;
+                float curCost = leftCount[i] * leftArea[i] + rightCount[i] * rightArea[i];
+                if (curCost < bestCost) {
+                    bestSplitAxis = axis;
+                    bestSplitPosition = boundsMin + scale * (i + 1);
+                    bestCost = curCost;
+                }
+            }
+        }
     }
 
     /// @brief Attempts to subdivide a given BVH node.
@@ -244,7 +296,7 @@ class AccelerationStructure : public Shape {
         }
 
         // set to true when implementing binning
-        static constexpr bool UseSAH = false;
+        static constexpr bool UseSAH = true;
 
         int splitAxis = -1;
         float splitPosition;

@@ -21,11 +21,11 @@ public:
                 n = its.shadingNormal;
             n = (n + Vector(1.f)) * 0.5f;
             return Color(n);
-        } /*else if (m_variable == "bvh") {
+        } else if (m_variable == "bvh") {
             Intersection its = m_scene->intersect(ray, rng);
             if (its.background) return Color(0.f);
             return Color(its.stats.bvhCounter, its.stats.primCounter, 0.f) / m_scale;
-        }*/
+        }
         return Color(0.f);
     }
 
