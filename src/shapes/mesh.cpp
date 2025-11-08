@@ -60,7 +60,7 @@ protected:
 
         float detM = e1.dot(d.cross(e2));
 
-        if (detM == 0)
+        if (abs(detM) < 1e-8f)
             return false;
         float invDetM = 1.f / detM;
 
