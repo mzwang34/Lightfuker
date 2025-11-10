@@ -42,10 +42,19 @@ public:
         float t1 = (-b - sqrtDelta) * 0.5f / a;
         float t2 = (-b + sqrtDelta) * 0.5f / a;
         if (t1 > t2) std::swap(t1, t2);
-
+   
         float t = Infinity;
-        if (t1 >= Epsilon) t = t1;
-        if (t2 >= Epsilon && t2 < t) t = t2;
+        bool flag = false;
+        if (t1 >= Epsilon) {
+            t = t1;
+            flag = true;
+        }
+        if (t2 >= Epsilon && t2 < t) {
+            t = t2;
+            flag = true;
+        }
+        if (!flag)
+            return false;
 
         if (t <= its.t) {
             its.t = t;
