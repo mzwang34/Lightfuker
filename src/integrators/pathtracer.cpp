@@ -4,11 +4,13 @@ namespace lightwave {
 
 class pathTracerIntegrator : public SamplingIntegrator {
     int m_depth;
+    bool m_nee;
 
 public:
     pathTracerIntegrator(const Properties &properties)
         : SamplingIntegrator(properties) {
         m_depth = properties.get<int>("depth", 2);
+        m_nee   = properties.get<bool>("nee", true);
     }
 
     Color Li(const Ray &ray, Sampler &rng) override {
@@ -28,7 +30,7 @@ public:
             if (path_len == m_depth - 1)
                 break;
 
-            if (m_scene-> hasLights()) {
+            if (m_nee && m_scene-> hasLights()) {
                 LightSample lightSample = m_scene->sampleLight(rng);             
                 if (lightSample) {
                     const Light *light = lightSample.light;
