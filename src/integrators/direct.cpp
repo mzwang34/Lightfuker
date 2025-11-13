@@ -3,41 +3,54 @@
 namespace lightwave {
 
 class DirectIntegrator : public SamplingIntegrator {
-
 public:
     DirectIntegrator(const Properties &properties)
-        : SamplingIntegrator(properties) {
-        // to parse properties from the scene description, use
-        // properties.get(name, default_value) you can also omit the default
-        // value if you want to require the user to specify a value
-    }
+        : SamplingIntegrator(properties) {}
 
-    /**
-     * @brief The job of an integrator is to return a color for a ray produced
-     * by the camera model. This will be run for each pixel of the image,
-     * potentially with multiple samples for each pixel.
-     */
     Color Li(const Ray &ray, Sampler &rng) override {
         Intersection its = m_scene->intersect(ray, rng);
-        if (its) {
-            auto light_sample = m_scene->sampleLight(rng);
-            auto sample = light_sample.light->sampleDirect(its.position, rng);
-            auto direct_ray = Ray(its.position, sample.wi);
-            auto its2       = m_scene->intersect(direct_ray, rng);
-            if (its2.t < sample.distance) {
-                return Color(0.f);
-            } else {
-                return sample.weight * its.evaluateBsdf(sample.wi).value;
-            }
-        } else {
+
+        if (!its)
             return its.evaluateEmission().value;
+
+        Color c(0.f);
+        if (m_scene->hasLights()) {
+            LightSample lightSample = m_scene->sampleLight(rng);
+            if (lightSample) {
+                const Light *light = lightSample.light;
+                DirectLightSample dSample =
+                    light->sampleDirect(its.position, rng);
+
+                Ray shadowRay{ its.position, dSample.wi };
+                Intersection shadowIts = m_scene->intersect(shadowRay, rng);
+                if (shadowIts.t >= dSample.distance) {
+                    c += dSample.weight * its.evaluateBsdf(dSample.wi).value /
+                         lightSample.probability;
+                }
+            }
         }
+
+        c += its.evaluateEmission().value;
+        BsdfSample bsdfSample = its.sampleBsdf(rng);
+        if (bsdfSample.isInvalid())
+            return c;
+        Ray newRay{ its.position, bsdfSample.wi };
+        Intersection nextIts = m_scene->intersect(newRay, rng);
+        c += nextIts.evaluateEmission().value * bsdfSample.weight;
+
+        return c;
     }
 
     /// @brief An optional textual representation of this class, which can be
     /// useful for debugging.
     std::string toString() const override {
-        return tfm::format("DirectIntegrator");
+        return tfm::format(
+            "DirectIntegrator[\n"
+            "  sampler = %s,\n"
+            "  image = %s,\n"
+            "]",
+            indent(m_sampler),
+            indent(m_image));
     }
 };
 
