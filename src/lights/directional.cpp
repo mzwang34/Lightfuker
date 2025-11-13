@@ -17,7 +17,7 @@ public:
         // NOT_IMPLEMENTED
         DirectLightSample sample = DirectLightSample();
         sample.wi                = (m_dir).normalized();
-        sample.distance          = INFINITY;
+        sample.distance          = Infinity;
         sample.weight            = m_intensity;
         return sample;
     }
