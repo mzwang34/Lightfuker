@@ -3,23 +3,24 @@
 namespace lightwave {
 
 class PointLight final : public Light {
+    Point m_position;
     Color m_power;
-    Point m_pos;
 
 public:
     PointLight(const Properties &properties) : Light(properties) {
-        m_power = properties.get<Color>("power", Color::black());
-        m_pos   = properties.get<Point>("position", Point(0.f));
+        m_position = properties.get<Point>("position");
+        m_power = properties.get<Color>("power");
     }
 
     DirectLightSample sampleDirect(const Point &origin,
                                    Sampler &rng) const override {
-        // NOT_IMPLEMENTED
-        DirectLightSample sample = DirectLightSample();
-        sample.wi                = (m_pos - origin).normalized();
-        sample.distance          = (m_pos - origin).length();
-        sample.weight = m_power * Inv4Pi / (m_pos - origin).lengthSquared();
-        return sample;
+        Vector w = m_position - origin;
+        float dist2 = w.lengthSquared();
+        float dist = sqrt(dist2);
+        w /= dist;
+
+        Color weight = m_power * Inv4Pi / dist2;
+        return DirectLightSample{ w, weight, dist };
     }
 
     bool canBeIntersected() const override { return false; }
