@@ -18,14 +18,17 @@ public:
             LightSample lightSample = m_scene->sampleLight(rng);
             if (lightSample) {
                 const Light *light = lightSample.light;
-                DirectLightSample dSample =
-                    light->sampleDirect(its.position, rng);
+                if (!light->canBeIntersected()) {
+                    DirectLightSample dSample =
+                        light->sampleDirect(its.position, rng);
 
-                Ray shadowRay{ its.position, dSample.wi };
-                Intersection shadowIts = m_scene->intersect(shadowRay, rng);
-                if (shadowIts.t >= dSample.distance) {
-                    c += dSample.weight * its.evaluateBsdf(dSample.wi).value /
-                         lightSample.probability;
+                    Ray shadowRay{ its.position, dSample.wi };
+                    Intersection shadowIts = m_scene->intersect(shadowRay, rng);
+                    if (shadowIts.t >= dSample.distance) {
+                        c += dSample.weight *
+                             its.evaluateBsdf(dSample.wi).value /
+                             lightSample.probability;
+                    }
                 }
             }
         }

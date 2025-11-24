@@ -3,10 +3,11 @@
 namespace lightwave {
 class Sphere : public Shape {
     Point2 sphericalCoordinates(const Vector &v) const {
-        Point2 result;
-        result.x() = atan2(v.y(), v.x()) * Inv2Pi + 0.5f;
-        result.y() = acos(v.z()) * InvPi;
-        return result;
+        float x = atan2(v.z(), v.x());
+        if (x < 0) x += 2.f * Pi;
+        x *= Inv2Pi;
+        float y = acos(v.y()) * InvPi;
+        return Point2(x, 1.f - y);
     }
 
     inline void populate(SurfaceEvent &surf, const Point &position) const {
