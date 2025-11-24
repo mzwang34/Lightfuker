@@ -14,7 +14,6 @@ public:
     }
 
     Color Li(const Ray &ray, Sampler &rng) override {
-        bool nee = true;
         Ray _ray = ray;
         Color throughput(1.f);
         Color c(0.f);
@@ -34,15 +33,14 @@ public:
                 LightSample lightSample = m_scene->sampleLight(rng);             
                 if (lightSample) {
                     const Light *light = lightSample.light;
-                    DirectLightSample dSample = light->sampleDirect(its.position, rng);
+                    if (!light->canBeIntersected()) {
+                        DirectLightSample dSample = light->sampleDirect(its.position, rng);
 
-                    Ray shadowRay{ its.position, dSample.wi };
-                    Intersection shadowIts = m_scene->intersect(shadowRay, rng);
-                    //float vis = 1.f;
-                    //if (!shadowIts.background && shadowIts.t < dSample.distance)
-                    //    vis = 0.0f;
-                    if (shadowIts.t >= dSample.distance)
-                        c += throughput * its.evaluateBsdf(dSample.wi).value * dSample.weight / lightSample.probability;
+                        Ray shadowRay{ its.position, dSample.wi };
+                        Intersection shadowIts = m_scene->intersect(shadowRay, rng);
+                        if (shadowIts.t >= dSample.distance)
+                            c += throughput * its.evaluateBsdf(dSample.wi).value * dSample.weight / lightSample.probability;
+                    }
                 }
             }
 

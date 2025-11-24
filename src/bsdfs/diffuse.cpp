@@ -12,7 +12,7 @@ public:
 
     BsdfEval evaluate(const Point2 &uv, const Vector &wo,
                       const Vector &wi) const override {
-        if (Frame::cosTheta(wi) <= 0 || Frame::cosTheta(wo) <= 0)
+        if (!Frame::sameHemisphere(wi, wo))
             return BsdfEval::invalid();
         return BsdfEval{ m_albedo.get()->evaluate(uv) * InvPi *
                          Frame::cosTheta(wi) };
