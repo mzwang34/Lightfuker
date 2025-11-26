@@ -17,14 +17,20 @@ public:
     }
 
     EmissionEval evaluate(const Vector &direction) const override {
-        Point2 warped = Point2(0);
-        // hints:
-        // * if (m_transform) { transform direction vector from world to local
-        // coordinates }
-        // * find the corresponding pixel coordinate for the given local
-        // direction
+        // Point2 warped = Point2(0);
+        //  hints:
+        //  * if (m_transform) { transform direction vector from world to local
+        //  coordinates }
+        //  * find the corresponding pixel coordinate for the given local
+        //  direction
+        Vector local_direction =
+            m_transform ? m_transform->inverse(direction) : direction;
+        float phi   = atan2(local_direction.z(), local_direction.x());
+        float theta = acos(local_direction.y());
+        float u     = phi * Inv2Pi + 0.5;
+        float v     = theta * InvPi;
         return {
-            .value = m_texture->evaluate(warped),
+            .value = m_texture->evaluate(Point2(1.f - u, v)),
         };
     }
 
@@ -39,8 +45,8 @@ public:
         // sun for example)
 
         return {
-            .wi = direction,
-            .weight = E.value * FourPi,
+            .wi       = direction,
+            .weight   = E.value * FourPi,
             .distance = Infinity,
         };
     }

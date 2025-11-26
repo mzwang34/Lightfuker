@@ -25,7 +25,36 @@ public:
 
     BsdfSample sample(const Point2 &uv, const Vector &wo,
                       Sampler &rng) const override {
-        NOT_IMPLEMENTED
+        // NOT_IMPLEMENTED
+        float cosTheta_o = Frame::cosTheta(wo);
+        float ior        = m_ior->scalar(uv);
+        if (cosTheta_o < 0) {
+            ior        = 1.f / ior;
+            cosTheta_o = -cosTheta_o;
+        }
+        float sin2Theta_o = 1.f - cosTheta_o * cosTheta_o;
+        float sin2Theta_i = sin2Theta_o / (ior * ior);
+        if (sin2Theta_i > 1.f)
+            return BsdfSample{ Vector(-wo.x(), -wo.y(), wo.z()),
+                               m_reflectance.get()->evaluate(uv) };
+        float cosTheta_i = sqrt(1 - sin2Theta_i);
+        float F_p =
+            (ior * cosTheta_o - cosTheta_i) / (ior * cosTheta_o + cosTheta_i);
+        float F_s =
+            (cosTheta_o - ior * cosTheta_i) / (cosTheta_o + ior * cosTheta_i);
+        float R = (F_p * F_p + F_s * F_s) / 2.f;
+        if (rng.next() < R) {
+            return BsdfSample{ Vector(-wo.x(), -wo.y(), wo.z()),
+                               m_reflectance.get()->evaluate(uv) };
+        } else {
+            // Vector n = Frame::cosTheta(wo) > 0 ? Vector(0.f, 0.f, 1.f)
+            //                                    : Vector(0.f, 0.f, -1.f);
+            // Vector wi = -wo / ior + (cosTheta_o / ior - cosTheta_i) * n;
+            Vector wi = refract(wo, Vector(0.f, 0.f, 1.f), ior);
+            return BsdfSample{
+                wi, m_transmittance.get()->evaluate(uv) / (ior * ior)
+            };
+        }
     }
 
     std::string toString() const override {
