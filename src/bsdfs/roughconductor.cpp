@@ -21,7 +21,15 @@ public:
         // extremely specular distributions (alpha values below 10^-3)
         const auto alpha = max(float(1e-3), sqr(m_roughness->scalar(uv)));
 
-        NOT_IMPLEMENTED
+        // NOT_IMPLEMENTED
+        if (!Frame::sameHemisphere(wi, wo))
+            return BsdfEval::invalid();
+        Vector wm = (wi + wo).normalized();
+        return { m_reflectance.get()->evaluate(uv) *
+                 microfacet::evaluateGGX(alpha, wm) *
+                 microfacet::smithG1(alpha, wm, wi) *
+                 microfacet::smithG1(alpha, wm, wo) /
+                 (4 * abs(Frame::cosTheta(wo))) };
 
         // hints:
         // * the microfacet normal can be computed from `wi' and `wo'
@@ -31,7 +39,12 @@ public:
                       Sampler &rng) const override {
         const auto alpha = max(float(1e-3), sqr(m_roughness->scalar(uv)));
 
-        NOT_IMPLEMENTED
+        // NOT_IMPLEMENTED
+        Vector wm = microfacet::sampleGGXVNDF(alpha, wo, rng.next2D());
+        Vector wi = reflect(wo, wm);
+        return { wi,
+                 m_reflectance.get()->evaluate(uv) *
+                     microfacet::smithG1(alpha, wm, wi) };
 
         // hints:
         // * do not forget to cancel out as many terms from your equations as
