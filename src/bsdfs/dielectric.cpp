@@ -47,9 +47,10 @@ public:
             return BsdfSample{ Vector(-wo.x(), -wo.y(), wo.z()),
                                m_reflectance.get()->evaluate(uv) };
         } else {
-            Vector n  = Frame::cosTheta(wo) > 0 ? Vector(0.f, 0.f, 1.f)
-                                                : Vector(0.f, 0.f, -1.f);
-            Vector wi = -wo / ior + (cosTheta_o / ior - cosTheta_i) * n;
+            // Vector n = Frame::cosTheta(wo) > 0 ? Vector(0.f, 0.f, 1.f)
+            //                                    : Vector(0.f, 0.f, -1.f);
+            // Vector wi = -wo / ior + (cosTheta_o / ior - cosTheta_i) * n;
+            Vector wi = refract(wo, Vector(0.f, 0.f, 1.f), ior);
             return BsdfSample{
                 wi, m_transmittance.get()->evaluate(uv) / (ior * ior)
             };
