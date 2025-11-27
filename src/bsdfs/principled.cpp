@@ -9,7 +9,10 @@ struct DiffuseLobe {
     Color color;
 
     BsdfEval evaluate(const Vector &wo, const Vector &wi) const {
-        NOT_IMPLEMENTED
+        // NOT_IMPLEMENTED
+        if (!Frame::sameHemisphere(wi, wo))
+            return BsdfEval::invalid();
+        return BsdfEval{ color * InvPi * Frame::cosTheta(wi) };
 
         // hints:
         // * copy your diffuse bsdf evaluate here
@@ -17,8 +20,13 @@ struct DiffuseLobe {
     }
 
     BsdfSample sample(const Vector &wo, Sampler &rng) const {
-        NOT_IMPLEMENTED
+        // NOT_IMPLEMENTED
+        Vector wi = squareToCosineHemisphere(rng.next2D());
+        if (Frame::cosTheta(wo) <= 0)
+            wi = -wi;
+        Color weight = color;
 
+        return BsdfSample{ wi, weight };
         // hints:
         // * copy your diffuse bsdf evaluate here
         // * you do not need to query a texture, the albedo is given by `color`
@@ -30,8 +38,14 @@ struct MetallicLobe {
     Color color;
 
     BsdfEval evaluate(const Vector &wo, const Vector &wi) const {
-        NOT_IMPLEMENTED
-
+        // NOT_IMPLEMENTED
+        if (!Frame::sameHemisphere(wi, wo))
+            return BsdfEval::invalid();
+        Vector wm = (wi + wo).normalized();
+        return { color * microfacet::evaluateGGX(alpha, wm) *
+                 microfacet::smithG1(alpha, wm, wi) *
+                 microfacet::smithG1(alpha, wm, wo) /
+                 (4 * abs(Frame::cosTheta(wo))) };
         // hints:
         // * copy your roughconductor bsdf evaluate here
         // * you do not need to query textures
@@ -40,8 +54,10 @@ struct MetallicLobe {
     }
 
     BsdfSample sample(const Vector &wo, Sampler &rng) const {
-        NOT_IMPLEMENTED
-
+        // NOT_IMPLEMENTED
+        Vector wm = microfacet::sampleGGXVNDF(alpha, wo, rng.next2D());
+        Vector wi = reflect(wo, wm);
+        return { wi, color * microfacet::smithG1(alpha, wm, wi) };
         // hints:
         // * copy your roughconductor bsdf sample here
         // * you do not need to query textures
@@ -102,8 +118,11 @@ public:
         PROFILE("Principled")
 
         const auto combination = combine(uv, wo);
-        NOT_IMPLEMENTED
-
+        // NOT_IMPLEMENTED
+        return { combination.diffuseSelectionProb *
+                     combination.diffuse.evaluate(wo, wi).value +
+                 (1.f - combination.diffuseSelectionProb) *
+                     combination.metallic.evaluate(wo, wi).value };
         // hint: evaluate `combination.diffuse` and `combination.metallic` and
         // combine their results
     }
@@ -113,7 +132,12 @@ public:
         PROFILE("Principled")
 
         const auto combination = combine(uv, wo);
-        NOT_IMPLEMENTED
+        // NOT_IMPLEMENTED
+        if (rng.next() < combination.diffuseSelectionProb) {
+            return combination.diffuse.sample(wo, rng);
+        } else {
+            return combination.metallic.sample(wo, rng);
+        }
 
         // hint: sample either `combination.diffuse` (probability
         // `combination.diffuseSelectionProb`) or `combination.metallic`
