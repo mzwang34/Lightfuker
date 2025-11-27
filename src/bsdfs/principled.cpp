@@ -119,10 +119,8 @@ public:
 
         const auto combination = combine(uv, wo);
         // NOT_IMPLEMENTED
-        return { combination.diffuseSelectionProb *
-                     combination.diffuse.evaluate(wo, wi).value +
-                 (1.f - combination.diffuseSelectionProb) *
-                     combination.metallic.evaluate(wo, wi).value };
+        return { combination.diffuse.evaluate(wo, wi).value +
+                 combination.metallic.evaluate(wo, wi).value };
         // hint: evaluate `combination.diffuse` and `combination.metallic` and
         // combine their results
     }
@@ -134,9 +132,13 @@ public:
         const auto combination = combine(uv, wo);
         // NOT_IMPLEMENTED
         if (rng.next() < combination.diffuseSelectionProb) {
-            return combination.diffuse.sample(wo, rng);
+            BsdfSample s = combination.diffuse.sample(wo, rng);
+            s.weight /= combination.diffuseSelectionProb;
+            return { s.wi, s.weight };
         } else {
-            return combination.metallic.sample(wo, rng);
+            BsdfSample s = combination.metallic.sample(wo, rng);
+            s.weight /= (1.f - combination.diffuseSelectionProb);
+            return { s.wi, s.weight };
         }
 
         // hint: sample either `combination.diffuse` (probability

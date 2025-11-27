@@ -3,18 +3,19 @@
 namespace lightwave {
 class Sphere : public Shape {
     Point2 sphericalCoordinates(const Vector &v) const {
-        float x = atan2(v.z(), v.x());
-        if (x < 0) x += 2.f * Pi;
+        float x = atan2(-v.z(), v.x());
+        if (x < 0)
+            x += 2.f * Pi;
         x *= Inv2Pi;
         float y = acos(v.y()) * InvPi;
-        return Point2(x, 1.f - y);
+        return Point2(x, y);
     }
 
     inline void populate(SurfaceEvent &surf, const Point &position) const {
         surf.position = position;
 
-        Vector n = Vector(surf.position).normalized();
-        surf.tangent = Frame(n).tangent;
+        Vector n           = Vector(surf.position).normalized();
+        surf.tangent       = Frame(n).tangent;
         surf.shadingNormal = surf.geometryNormal = n;
 
         surf.uv = sphericalCoordinates(n);
@@ -25,7 +26,8 @@ class Sphere : public Shape {
 public:
     Sphere(const Properties &properties) {}
 
-    bool intersect(const Ray &ray, Intersection &its, Sampler &rng) const override {
+    bool intersect(const Ray &ray, Intersection &its,
+                   Sampler &rng) const override {
         PROFILE("Sphere")
 
         auto d = ray.direction;
@@ -38,20 +40,22 @@ public:
         float c = (o - center).dot(o - center) - radius * radius;
 
         float delta = b * b - 4.f * a * c;
-        if (delta < 0) return false;
+        if (delta < 0)
+            return false;
         float sqrtDelta = sqrt(delta);
-        float t1 = (-b - sqrtDelta) * 0.5f / a;
-        float t2 = (-b + sqrtDelta) * 0.5f / a;
-        if (t1 > t2) std::swap(t1, t2);
-   
-        float t = Infinity;
+        float t1        = (-b - sqrtDelta) * 0.5f / a;
+        float t2        = (-b + sqrtDelta) * 0.5f / a;
+        if (t1 > t2)
+            std::swap(t1, t2);
+
+        float t   = Infinity;
         bool flag = false;
         if (t1 >= Epsilon) {
-            t = t1;
+            t    = t1;
             flag = true;
         }
         if (t2 >= Epsilon && t2 < t) {
-            t = t2;
+            t    = t2;
             flag = true;
         }
         if (!flag)
@@ -68,15 +72,12 @@ public:
     Bounds getBoundingBox() const override {
         return Bounds(Point{ -1, -1, -1 }, Point{ +1, +1, +1 });
     }
-    Point getCentroid() const override {
-        return Point(0.f);
-    }
-    AreaSample sampleArea(Sampler &rng) const override {
+    Point getCentroid() const override { return Point(0.f); }
+    AreaSample sampleArea(Sampler &rng) const override{
         NOT_IMPLEMENTED
-    }
-    std::string toString() const override {
+    } std::string toString() const override {
         return "Sphere[]";
     }
 };
-}
+} // namespace lightwave
 REGISTER_SHAPE(Sphere, "sphere")
