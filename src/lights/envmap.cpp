@@ -25,12 +25,12 @@ public:
         //  direction
         Vector local_direction =
             m_transform ? m_transform->inverse(direction) : direction;
-        float phi   = atan2(local_direction.z(), local_direction.x());
+        float phi   = atan2(-local_direction.z(), local_direction.x());
         float theta = acos(local_direction.y());
         float u     = phi * Inv2Pi + 0.5;
         float v     = theta * InvPi;
         return {
-            .value = m_texture->evaluate(Point2(1.f - u, v)),
+            .value = m_texture->evaluate(Point2(u, v)),
         };
     }
 
