@@ -21,10 +21,7 @@ public:
     BsdfSample sample(const Point2 &uv, const Vector &wo,
                       Sampler &rng) const override {
         // NOT_IMPLEMENTED
-        Vector wi = Vector(-wo.x(), -wo.y(), wo.z());
-        // Color weight = m_reflectance.get()->evaluate(uv) *
-        // Frame::cosTheta(wi) /
-        //                abs(Frame::cosTheta(wi));
+        Vector wi    = Vector(-wo.x(), -wo.y(), wo.z());
         Color weight = m_reflectance.get()->evaluate(uv);
         return BsdfSample{ wi, weight };
     }
