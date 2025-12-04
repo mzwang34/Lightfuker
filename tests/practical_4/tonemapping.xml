@@ -1,0 +1,6 @@
+<test type="image" id="tonemapping">
+    <postprocess type="tonemap" operator="reinhard">
+        <image name="input" filename="../textures/kloofendal_overcast_1k.hdr" />
+        <image id="tonemapped" />
+    </postprocess>
+</test>

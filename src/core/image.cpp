@@ -142,7 +142,7 @@ void Image::saveAt(const std::filesystem::path &path, float norm) const {
     int ret = SaveEXRImageToFile(&image, &header, path.generic_string().c_str(), &error);
 
     header.num_custom_attributes = 0;
-    header.custom_attributes = nullptr; // memory freed by std::vector
+    header.custom_attributes     = nullptr; // memory freed by std::vector
     FreeEXRHeader(&header);
 
     if (ret != TINYEXR_SUCCESS) {

@@ -47,11 +47,12 @@ public:
         m_scene   = properties.getChild<Scene>();
     }
 
-    /// @brief Sets the output image that should be populated by rendering.
-    void setImage(const ref<Image> &image) { m_image = image; }
+    /// @brief Gets the output image that is populated throughout rendering.
+    ref<Image> getOutputImage() override { return m_image; }
 
-    /// @brief Gets the output image that will be populated by rendering.
-    Image *image() { return m_image.get(); }
+    /// @brief Sets the output image that should be populated by rendering.
+    void setOutputImage(const ref<Image> &image) override { m_image = image; }
+
     /// @brief Gets the scene that will be rendered.
     Scene *scene() { return m_scene.get(); }
     /// @brief Gets the random number generator that steers the sampling

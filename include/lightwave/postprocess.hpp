@@ -28,6 +28,9 @@ public:
         m_input  = properties.get<Image>("input");
         m_output = properties.getChild<Image>();
     }
+
+    void setOutputImage(const ref<Image> &image) override { m_output = image; }
+    ref<Image> getOutputImage() override { return m_output; }
 };
 
 } // namespace lightwave
