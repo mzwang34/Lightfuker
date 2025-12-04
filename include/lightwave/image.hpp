@@ -90,12 +90,11 @@ public:
     }
 
     /// @brief Set the color of every pixel to the color black.
-    void clear() {
-        std::fill(m_data.begin(), m_data.end(), Color());
-    }
+    void clear() { std::fill(m_data.begin(), m_data.end(), Color()); }
 
     /// @brief Saves the image as an EXR file at a given path.
-    void saveAt(const std::filesystem::path &path, float norm=1.f) const;
+    virtual void saveAt(const std::filesystem::path &path,
+                        float norm = 1.f) const;
 
     /// @brief Saves the image at its default path, given by the @ref basePath
     /// of this image and its @ref id .

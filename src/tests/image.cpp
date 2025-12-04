@@ -15,8 +15,8 @@ namespace lightwave {
  * and compares it against a specified threshold.
  */
 class CompareImage : public Test {
-    /// @brief The integrator to execute and compare against a reference image.
-    ref<SamplingIntegrator> m_integrator;
+    /// @brief The executable to run and compare against a reference image.
+    ref<Executable> m_executable;
     /// @brief The directory the resulting image should be stored to.
     std::filesystem::path m_basePath;
     /// @brief The threshold to compare the MAE (mean absolute error) against.
@@ -29,7 +29,7 @@ class CompareImage : public Test {
 
 public:
     CompareImage(const Properties &properties) {
-        m_integrator   = properties.getChild<SamplingIntegrator>();
+        m_executable   = properties.getChild<Executable>();
         m_thresholdMAE = properties.get<float>("mae", 1e-1);
         m_thresholdME  = properties.get<float>("me", 2e-4);
         m_basePath = properties.basePath(); // we store the test image in the
@@ -43,8 +43,8 @@ public:
         ref<Image> image = std::make_shared<Image>();
         image->setBasePath(m_basePath);
         image->setId(id() + "_test");
-        m_integrator->setImage(image);
-        m_integrator->execute();
+        m_executable->setOutputImage(image);
+        m_executable->execute();
 
         if (std::getenv("reference")) {
             image->saveAt(referencePath);
@@ -63,12 +63,12 @@ public:
     std::string toString() const override {
         return tfm::format(
             "CompareImage[\n"
-            "  integrator = %s,\n"
+            "  executable = %s,\n"
             "  thresholdMAE  = %s,\n"
             "  thresholdME   = %s,\n"
             "  allowNegative = %s,\n"
             "]",
-            indent(m_integrator),
+            indent(m_executable),
             indent(m_thresholdMAE),
             indent(m_thresholdME),
             indent(m_allowNegative));

@@ -384,7 +384,7 @@ auto operator-=(TPoint<Type, Dimension> &a, const TVector<Type, Dimension> &b) {
 
 template <typename Type, int Dimension>
 auto operator-(const TPoint<Type, Dimension> &a,
-               const TPoint<Type, Dimension> &b) {
+               const TPoint<Type, Dimension> &b){
     TVector<Type, Dimension> BUILD1(a[i] - b[i])
 }
 
@@ -401,7 +401,8 @@ auto operator-(const TPoint<Type, Dimension> &a,
 
 /// @brief A matrix with @c R rows and @c C columns, the elements of which are
 /// stored with datatype @c T .
-template <typename T, int R, int C> class TMatrix {
+template <typename T, int R, int C>
+class TMatrix {
     /// @brief The elements that constitute the matrix, in row-major format.
     std::array<std::array<T, C>, R> m_data;
 
@@ -751,7 +752,7 @@ auto operator%(const TPoint<int, Dimension> &a,
 /// @brief Computes the component-wise modulo operation of two points.
 template <int Dimension>
 auto operator%(const TPoint<float, Dimension> &a,
-               const TPoint<float, Dimension> &b) {
+               const TPoint<float, Dimension> &b){
     TPoint<float, Dimension> BUILD1(fmodf(a[i], b[i]))
 }
 
