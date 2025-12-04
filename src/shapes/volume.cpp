@@ -14,20 +14,31 @@ public:
 
     bool intersect(const Ray &ray, Intersection &its,
                    Sampler &rng) const override {
-        NOT_IMPLEMENTED
+        float t = Epsilon - log(1.f - rng.next()) / m_density;
+        if (t < its.t) {
+            its.t             = t;
+            its.position      = ray(t);
+            its.shadingNormal = -ray.direction;
+            return true;
+        }
+          
+        return false;
     }
 
     float transmittance(const Ray &ray, float tMax,
                         Sampler &rng) const override {
-        NOT_IMPLEMENTED
+        Intersection its;
+        if (intersect(ray, its, rng) && its.t < tMax)
+            return 0.f;
+        return exp(-m_density * tMax);
     }
 
     Bounds getBoundingBox() const override {
-        NOT_IMPLEMENTED
+        return Bounds::full();
     }
 
     Point getCentroid() const override {
-        NOT_IMPLEMENTED
+        return Point{ 0.f };
     }
 
     std::string toString() const override { return "Volume[]"; }

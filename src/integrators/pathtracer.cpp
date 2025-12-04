@@ -37,9 +37,10 @@ public:
                         DirectLightSample dSample = light->sampleDirect(its.position, rng);
 
                         Ray shadowRay{ its.position, dSample.wi };
-                        Intersection shadowIts = m_scene->intersect(shadowRay, rng);
-                        if (shadowIts.t >= dSample.distance)
-                            c += throughput * its.evaluateBsdf(dSample.wi).value * dSample.weight / lightSample.probability;
+                        float trans = m_scene->transmittance(
+                            shadowRay, dSample.distance, rng);
+                        if (trans > 0.f)
+                            c += trans * throughput * its.evaluateBsdf(dSample.wi).value * dSample.weight / lightSample.probability;
                     }
                 }
             }
