@@ -33,13 +33,21 @@ public:
             cosTheta_o = -cosTheta_o;
         }
         float R = fresnelDielectric(cosTheta_o, ior);
-        if (rng.next() < R) {
+        auto c_reflect = R * m_reflectance->evaluate(uv);
+        auto c_transmit = (1 - R) * m_transmittance->evaluate(uv);
+        float p_reflect =
+            c_reflect.mean() > 0
+                ? c_reflect.mean() / (c_reflect.mean() + c_transmit.mean())
+                : 0;
+        if (rng.next() < p_reflect) {
             return BsdfSample{ Vector(-wo.x(), -wo.y(), wo.z()),
-                               m_reflectance.get()->evaluate(uv) };
+                               c_reflect / p_reflect };
         } else {
             Vector wi = refract(wo, Vector(0.f, 0.f, 1.f), ior);
+            if (wi.isZero())
+                return BsdfSample::invalid();
             return BsdfSample{
-                wi, m_transmittance.get()->evaluate(uv) / (ior * ior)
+                wi, c_transmit / (ior * ior * (1 - p_reflect))
             };
         }
     }
