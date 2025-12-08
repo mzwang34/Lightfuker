@@ -1,11 +1,11 @@
 #include <lightwave/camera.hpp>
 #include <lightwave/core.hpp>
+#include <lightwave/instance.hpp>
 #include <lightwave/integrator.hpp>
 #include <lightwave/light.hpp>
+#include <lightwave/profiler.hpp>
 #include <lightwave/registry.hpp>
 #include <lightwave/shape.hpp>
-#include <lightwave/instance.hpp>
-#include <lightwave/profiler.hpp>
 
 #include <unordered_map>
 
@@ -26,8 +26,7 @@ class Scene::LightSampling {
     std::vector<DistributionElement> m_distribution;
 
 public:
-    LightSampling(const std::vector<ref<Light>> &lights)
-    : m_lights(lights) {
+    LightSampling(const std::vector<ref<Light>> &lights) : m_lights(lights) {
         float cummulativeWeight = 0;
 
         for (const auto &light : lights) {
@@ -40,19 +39,18 @@ public:
             }
 
             cummulativeWeight += weight;
-            m_distribution.emplace_back(DistributionElement {
-                light.get(),
-                weight,
-                cummulativeWeight
-            });
+            m_distribution.emplace_back(
+                DistributionElement{ light.get(), weight, cummulativeWeight });
         }
 
-        // normalize the distribution so that probability and cdf are in the range [0,1]
+        // normalize the distribution so that probability and cdf are in the
+        // range [0,1]
         for (auto &element : m_distribution) {
             element.probability /= cummulativeWeight;
             element.cdf /= cummulativeWeight;
 
-            // add light to lookup table so that the probability can be queried efficiently
+            // add light to lookup table so that the probability can be queried
+            // efficiently
             m_probabilities[element.light] = element.probability;
         }
     }
@@ -60,27 +58,29 @@ public:
     bool hasLights() const { return !m_lights.empty(); }
 
     LightSample sample(Sampler &rng) const {
-        if (m_distribution.empty()) return LightSample::invalid();
-        const auto cdf = rng.next();
+        if (m_distribution.empty())
+            return LightSample::invalid();
+        const auto cdf     = rng.next();
         const auto element = std::upper_bound(
             m_distribution.begin(),
             m_distribution.end(),
             cdf,
             [](float value, const DistributionElement &element) {
                 return value < element.cdf;
-            }
-        );
+            });
         return {
-            .light = element->light,
+            .light       = element->light,
             .probability = element->probability,
         };
     }
 
     float probability(const Light *light) const {
-        if (light == nullptr) return 0;
+        if (light == nullptr)
+            return 0;
 
         const auto it = m_probabilities.find(light);
-        if (it == m_probabilities.end()) return 0;
+        if (it == m_probabilities.end())
+            return 0;
         return it->second;
     }
 };
@@ -88,7 +88,8 @@ public:
 Scene::Scene(const Properties &properties) {
     m_camera     = properties.getChild<Camera>();
     m_background = properties.getOptionalChild<BackgroundLight>();
-    m_lightSampling = std::make_shared<LightSampling>(properties.getChildren<Light>());
+    m_lightSampling =
+        std::make_shared<LightSampling>(properties.getChildren<Light>());
 
     const std::vector<ref<Shape>> entities = properties.getChildren<Shape>();
     if (entities.size() == 1) {
@@ -102,11 +103,13 @@ Scene::Scene(const Properties &properties) {
 }
 
 std::string Scene::toString() const {
-    return tfm::format("Scene[\n"
-                       "  camera = %s,\n"
-                       "  shape = %s,\n"
-                       "]",
-                       indent(m_camera), indent(m_shape));
+    return tfm::format(
+        "Scene[\n"
+        "  camera = %s,\n"
+        "  shape = %s,\n"
+        "]",
+        indent(m_camera),
+        indent(m_shape));
 }
 
 Intersection Scene::intersect(const Ray &ray, Sampler &rng) const {
@@ -123,7 +126,14 @@ Intersection Scene::intersect(const Ray &ray, Sampler &rng) const {
 
 float Scene::transmittance(const Ray &ray, float tMax, Sampler &rng) const {
     PROFILE("Transmittance")
-    return m_shape->transmittance(ray, tMax * (1 - Epsilon), rng);
+    float transmittance =
+        m_shape->transmittance(ray, tMax * (1 - Epsilon), rng);
+    assert_condition(transmittance >= 0 && transmittance <= 1, {
+        logger(EError,
+               "transmittance should be between 0 and 1. "
+               "Computed transmittance: %f",
+               transmittance);
+    }) return transmittance;
 }
 
 LightSample Scene::sampleLight(Sampler &rng) const {
@@ -132,9 +142,7 @@ LightSample Scene::sampleLight(Sampler &rng) const {
     return m_lightSampling->sample(rng);
 }
 
-bool Scene::hasLights() const {
-    return m_lightSampling->hasLights();
-}
+bool Scene::hasLights() const { return m_lightSampling->hasLights(); }
 
 Bounds Scene::getBoundingBox() const { return m_shape->getBoundingBox(); }
 
