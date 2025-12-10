@@ -133,8 +133,9 @@ public:
     /// @brief Creates white color (i.e., all components 1).
     static Color white() { return Color(1); }
 
-    /// @brief Creates a color matching the blackbody of temperature `t` given in Kelvin (range 800-12000).
-    /// The color does not contain the power of the blackbody only the appeal.
+    /// @brief Creates a color matching the blackbody of temperature `t` given
+    /// in Kelvin (range 800-12000). The color does not contain the power of the
+    /// blackbody only the appeal.
     /// @note Implementation can be found in `math.cpp`.
     static Color fromTemperature(float t);
 };

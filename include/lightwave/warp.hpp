@@ -43,7 +43,7 @@ inline Point2 squareToUniformDiskConcentric(const Point2 &sample) {
 inline Vector squareToUniformSphere(const Point2 &sample) {
     float z   = 1 - 2 * sample.y();
     float r   = safe_sqrt(1 - z * z);
-    float phi = 2 * Pi * sample.x();
+    float phi = TwoPi * sample.x();
     return { r * cos(phi), r * sin(phi), z };
 }
 
