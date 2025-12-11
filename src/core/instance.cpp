@@ -84,6 +84,23 @@ bool Instance::intersect(const Ray &worldRay, Intersection &its,
     return wasIntersected;
 }
 
+float Instance::transmittance(const Ray &worldRay, float tMax,
+                              Sampler &rng) const {
+    if (!m_transform) {
+        return m_shape->transmittance(worldRay, tMax, rng);
+    }
+
+    Ray localRay = m_transform->inverse(worldRay);
+
+    const float dLength = localRay.direction.length();
+    if (dLength == 0)
+        return 0;
+    localRay.direction /= dLength;
+    tMax *= dLength;
+
+    return m_shape->transmittance(localRay, tMax, rng);
+}
+
 Bounds Instance::getBoundingBox() const {
     if (!m_transform) {
         // fast path
