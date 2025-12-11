@@ -96,6 +96,8 @@ public:
      */
     bool intersect(const Ray &ray, Intersection &its,
                    Sampler &rng) const override;
+    float transmittance(const Ray &ray, float tMax,
+                        Sampler &rng) const override;
     /// @brief Returns the bounding box of the instance in world coordinates.
     Bounds getBoundingBox() const override;
     /// @brief Returns the centroid of the instance in world coordinates.
