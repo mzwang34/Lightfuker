@@ -42,6 +42,8 @@ public:
         // NOT_IMPLEMENTED
         Vector wm = microfacet::sampleGGXVNDF(alpha, wo, rng.next2D());
         Vector wi = reflect(wo, wm);
+        if (!Frame::sameHemisphere(wi, wo))
+            return BsdfSample::invalid();
         return { wi,
                  m_reflectance.get()->evaluate(uv) *
                      microfacet::smithG1(alpha, wm, wi) };

@@ -30,6 +30,8 @@ public:
         if (Frame::cosTheta(wo) <= 0)
             wi = -wi;
         Color weight = m_albedo.get()->evaluate(uv);
+        if (!Frame::sameHemisphere(wi, wo))
+            return BsdfSample::invalid();
 
         return BsdfSample{ wi, weight };
     }
