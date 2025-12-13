@@ -25,6 +25,8 @@ struct DiffuseLobe {
         if (Frame::cosTheta(wo) <= 0)
             wi = -wi;
         Color weight = color;
+        if (!Frame::sameHemisphere(wi, wo))
+            return BsdfSample::invalid();
 
         return BsdfSample{ wi, weight };
         // hints:
@@ -57,6 +59,8 @@ struct MetallicLobe {
         // NOT_IMPLEMENTED
         Vector wm = microfacet::sampleGGXVNDF(alpha, wo, rng.next2D());
         Vector wi = reflect(wo, wm);
+        if (!Frame::sameHemisphere(wi, wo))
+            return BsdfSample::invalid();
         return { wi, color * microfacet::smithG1(alpha, wm, wi) };
         // hints:
         // * copy your roughconductor bsdf sample here
