@@ -1,0 +1,35 @@
+<scene id="scene">
+  <camera type="perspective">
+    <integer name="width" value="1920"/>
+    <integer name="height" value="1080"/>
+    <float name="fov" value="39.598"/>
+    <string name="fovAxis" value="x"/>
+    <transform>
+      <matrix value="0.99925,0.020749,-0.032544,0.053973,  0.038596,-0.5372,0.84257,-2.2942,  -2.1565e-07,-0.8432,-0.5376,1.891,  0,0,0,1"/>
+    </transform>
+  </camera>
+  <instance>
+    <bsdf type="principled">
+      <texture name="baseColor" type="image" filename="textures/normalPM3D_Ring3D2.bmp"/>
+      <texture name="roughness" type="constant" value="0.42551"/>
+      <texture name="metallic" type="constant" value="0"/>
+      <texture name="specular" type="constant" value="0"/>
+    </bsdf>
+    <shape type="mesh" filename="meshes/Mesh.002.ply"/>
+    <transform>
+      <matrix value="1,0,0,0,  0,1,0,0,  0,0,1,0,  0,0,0,1"/>
+    </transform>
+  </instance>
+ 
+  <light type="envmap">
+    <texture type="image" filename="textures/dining-room_2K_034ec9a8-cc5c-44a8-be08-88e072745cb5.exr.exr" border="clamp"/>
+    <transform>
+      <matrix value="1,0,0,0,  0,0,1,0,  0,-1,0,0,  0,0,0,1"/>
+    </transform>
+  </light>
+</scene>
+<integrator type="pathtracer" depth="5">
+  <ref id="scene"/>
+  <image id="noisy"/>
+  <sampler type="independent" count="256"/>
+</integrator>

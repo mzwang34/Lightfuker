@@ -14,31 +14,97 @@ public:
 
     bool intersect(const Ray &ray, Intersection &its,
                    Sampler &rng) const override {
-        float t = Epsilon - log(1.f - rng.next()) / m_density;
-        if (t < its.t) {
-            its.t             = t;
-            its.position      = ray(t);
-            its.shadingNormal = -ray.direction;
-            return true;
+        if (m_boundary) {
+            Intersection its_entry;
+            if (!m_boundary->intersect(ray, its_entry, rng))
+                return false;
+
+            bool is_outside = ray.direction.dot(its_entry.shadingNormal) < 0.f;
+            float t_entry, t_exit;
+
+            if (is_outside) {
+                t_entry = its_entry.t;
+
+                Ray ray_inside(ray(t_entry), ray.direction);
+                Intersection its_exit;
+                if (m_boundary->intersect(ray_inside, its_exit, rng)) {
+                    t_exit = t_entry + its_exit.t;
+                } else {
+                    return false;
+                }
+            } else {
+                t_entry = 0;
+                t_exit  = its_entry.t;
+            }
+            float t        = Epsilon - log(1.f - rng.next()) / m_density;
+            float t_target = t_entry + t;
+            if (t_target >= t_exit) {
+                return false;
+            }
+            if (t_target < its.t) {
+                its.t              = t_target;
+                its.position       = ray(t_target);
+                its.shadingNormal  = -ray.direction;
+                its.geometryNormal = -ray.direction;
+                return true;
+            }
+
+        } else {
+            float t = Epsilon - log(1.f - rng.next()) / m_density;
+            if (t < its.t) {
+                its.t              = t;
+                its.position       = ray(t);
+                its.shadingNormal  = -ray.direction;
+                its.geometryNormal = -ray.direction;
+                return true;
+            }
         }
-          
         return false;
     }
 
     float transmittance(const Ray &ray, float tMax,
                         Sampler &rng) const override {
-        Intersection its;
-        if (intersect(ray, its, rng) && its.t < tMax)
-            return 0.f;
-        return exp(-m_density * tMax);
+        if (m_boundary) {
+            Intersection its_entry;
+            if (!m_boundary->intersect(ray, its_entry, rng))
+                return 1.f;
+
+            bool is_outside = ray.direction.dot(its_entry.shadingNormal) < 0.f;
+            float t_entry, t_exit;
+
+            if (is_outside) {
+                t_entry = its_entry.t;
+
+                Ray ray_inside(ray(t_entry), ray.direction);
+                Intersection its_exit;
+                if (m_boundary->intersect(ray_inside, its_exit, rng)) {
+                    t_exit = t_entry + its_exit.t;
+                } else {
+                    return 1.f;
+                }
+            } else {
+                t_entry = 0.f;
+                t_exit  = its_entry.t;
+            }
+            if (tMax <= t_entry)
+                return 1.f;
+
+            if (t_exit >= tMax)
+                t_exit = tMax;
+
+            return exp(-m_density * (t_exit - t_entry));
+
+        } else {
+            return exp(-m_density * tMax);
+        }
     }
 
     Bounds getBoundingBox() const override {
-        return Bounds::full();
+        return m_boundary ? m_boundary->getBoundingBox() : Bounds::full();
     }
 
     Point getCentroid() const override {
-        return Point{ 0.f };
+        return m_boundary ? m_boundary->getCentroid() : Point{ 0.f };
     }
 
     std::string toString() const override { return "Volume[]"; }

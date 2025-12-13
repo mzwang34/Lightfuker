@@ -5,15 +5,27 @@ namespace lightwave {
 class Tonemap : public Postprocess {
 
 public:
-    Tonemap(const Properties &properties) : Postprocess(properties) {
-    }
+    Tonemap(const Properties &properties) : Postprocess(properties) {}
 
     void execute() override {
         m_output->initialize(m_input->resolution());
 
-        NOT_IMPLEMENTED
+        // NOT_IMPLEMENTED
+        Point2i res = m_input->resolution();
+        for (int x = 0; x < res.x(); x++) {
+            for (int y = 0; y < res.y(); y++) {
+                Point2i p{ x, y };
+                const Color &c = (*m_input)(p);
 
-        Streaming stream{*m_output};
+                Color out(c.r() / (1.0f + c.r()),
+                          c.g() / (1.0f + c.g()),
+                          c.b() / (1.0f + c.b()));
+
+                (*m_output)(p) = out;
+            }
+        }
+
+        Streaming stream{ *m_output };
         stream.update();
         m_output->save();
     }
