@@ -20,7 +20,7 @@ class Sphere : public Shape {
 
         surf.uv = sphericalCoordinates(n);
 
-        surf.pdf = 0.f; // TODO
+        surf.pdf = Inv4Pi;
     }
 
 public:
@@ -72,10 +72,30 @@ public:
     Bounds getBoundingBox() const override {
         return Bounds(Point{ -1, -1, -1 }, Point{ +1, +1, +1 });
     }
+
     Point getCentroid() const override { return Point(0.f); }
+
     AreaSample sampleArea(Sampler &rng) const override{
-        NOT_IMPLEMENTED
-    } std::string toString() const override {
+        // area sampling
+        float u = rng.next();
+        float v = rng.next();
+
+        float z = 1.0f - 2.0f * u; // cos_theta
+        float sin_theta = sqrt(std::max(0.f, 1.0f - z * z));
+        float phi = 2.f * Pi * v;
+
+        float x = sin_theta * cos(phi);
+        float y = sin_theta * sin(phi);
+
+        Point position(x, y, z);
+
+        AreaSample sample;
+        populate(sample, position);
+
+        return sample;
+    } 
+    
+    std::string toString() const override {
         return "Sphere[]";
     }
 };

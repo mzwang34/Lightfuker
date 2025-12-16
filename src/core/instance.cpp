@@ -15,7 +15,8 @@ void Instance::transformFrame(SurfaceEvent &surf, const Vector &wo) const {
 
     surf.tangent = Frame(surf.shadingNormal).tangent;
 
-    surf.pdf = 0.f; // TODO
+    float scale = m_transform->apply(Vector(1, 0, 0)).length();
+    surf.pdf /= (scale * scale); // uniform scale only
 }
 
 inline void validateIntersection(const Intersection &its) {
