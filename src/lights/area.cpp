@@ -5,16 +5,18 @@ namespace lightwave {
 class AreaLight final : public Light {
     ref<Shape> m_shape;
     ref<Emission> m_emission;
+    bool m_improvedSampling;
 
 public:
     AreaLight(const Properties &properties) : Light(properties) {
         m_shape = properties.getChild<Shape>();
         m_emission = properties.getChild<Emission>();
+        m_improvedSampling = properties.get<bool>("improved", true);
     }
 
     DirectLightSample sampleDirect(const Point &origin,
                                    Sampler &rng) const override {
-        AreaSample sample = m_shape->sampleArea(rng);
+        AreaSample sample = m_improvedSampling ? m_shape->sampleArea(origin, rng) : m_shape->sampleArea(rng);                  
 
         Vector w = sample.position - origin;
         float dist2 = w.lengthSquared();

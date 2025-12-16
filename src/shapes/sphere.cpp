@@ -94,6 +94,47 @@ public:
 
         return sample;
     } 
+
+    AreaSample sampleArea(const Point &origin, Sampler &rng) const override {
+        float u = rng.next();
+        float v = rng.next();
+
+        Vector d = getCentroid() - origin;
+        float dist2 = d.lengthSquared();
+        float dist = std::sqrt(dist2);
+        d /= dist;
+
+        float sin_theta_max2 = 1.f / dist2;
+        float cos_theta_max = std::sqrt(std::max(0.f, 1.f - sin_theta_max2));
+
+        float cos_theta = 1.f - u * (1.f - cos_theta_max);
+        float sin_theta = std::sqrt(std::max(0.f, 1.f - cos_theta * cos_theta));
+        float phi = 2.f * Pi * v;
+
+        Frame frame(d);
+
+        float x = sin_theta * cos(phi);
+        float y = sin_theta * sin(phi);
+        Vector sample_dir(x, y, cos_theta);
+        sample_dir = frame.toWorld(sample_dir);
+
+        Intersection its;
+        Ray ray(origin, sample_dir);
+        // fix floating precision error at edge
+        if (!intersect(ray, its, rng))
+            its.t = d.dot(sample_dir);
+
+        Point position = ray(its.t);
+        
+        AreaSample sample;
+        populate(sample, position);
+        Vector w = sample.position - origin;
+        dist2 = w.lengthSquared();
+        float cosTheta = (-w / sqrt(dist2)).dot(sample.shadingNormal);
+        sample.pdf = Inv2Pi / (1.f - cos_theta_max) * cosTheta / dist2; // area pdf
+
+        return sample;
+    }
     
     std::string toString() const override {
         return "Sphere[]";

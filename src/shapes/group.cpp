@@ -55,6 +55,15 @@ public:
         return sample;
     }
 
+    AreaSample sampleArea(const Point& origin, Sampler &rng) const override {
+        int childIndex = int(rng.next() * m_children.size());
+        childIndex     = min(childIndex, int(m_children.size()) - 1);
+
+        AreaSample sample = m_children[childIndex]->sampleArea(origin, rng);
+        sample.pdf /= m_children.size();
+        return sample;
+    }
+
     std::string toString() const override {
         std::stringstream oss;
         oss << "Group[" << std::endl;
