@@ -154,6 +154,13 @@ AreaSample Instance::sampleArea(Sampler &rng) const {
     return sample;
 }
 
+AreaSample Instance::sampleArea(const Point& origin, Sampler &rng) const {
+    Point localOrigin = m_transform->inverse(origin);
+    AreaSample sample = m_shape->sampleArea(localOrigin, rng);
+    transformFrame(sample, Vector());
+    return sample;
+}
+
 } // namespace lightwave
 
 REGISTER_CLASS(Instance, "instance", "default")
