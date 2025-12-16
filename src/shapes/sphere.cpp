@@ -75,14 +75,14 @@ public:
 
     Point getCentroid() const override { return Point(0.f); }
 
-    AreaSample sampleArea(Sampler &rng) const override{
+    AreaSample sampleArea(Sampler &rng) const override {
         // area sampling
         float u = rng.next();
         float v = rng.next();
 
-        float z = 1.0f - 2.0f * u; // cos_theta
+        float z         = 1.0f - 2.0f * u; // cos_theta
         float sin_theta = sqrt(std::max(0.f, 1.0f - z * z));
-        float phi = 2.f * Pi * v;
+        float phi       = 2.f * Pi * v;
 
         float x = sin_theta * cos(phi);
         float y = sin_theta * sin(phi);
@@ -93,29 +93,32 @@ public:
         populate(sample, position);
 
         return sample;
-    } 
+    }
 
     AreaSample sampleArea(const Point &origin, Sampler &rng) const override {
         float u = rng.next();
         float v = rng.next();
 
-        Vector d = getCentroid() - origin;
+        Vector d    = getCentroid() - origin;
         float dist2 = d.lengthSquared();
-        float dist = std::sqrt(dist2);
+        float dist  = std::sqrt(dist2);
         d /= dist;
 
         float sin_theta_max2 = 1.f / dist2;
-        float cos_theta_max = std::sqrt(std::max(0.f, 1.f - sin_theta_max2));
-        float sin_theta_max = std::sqrt(sin_theta_max2);
+        float cos_theta_max  = std::sqrt(std::max(0.f, 1.f - sin_theta_max2));
+        float sin_theta_max  = std::sqrt(sin_theta_max2);
 
         float cos_theta = 1.f - u * (1.f - cos_theta_max);
-        // float sin_theta = std::sqrt(std::max(0.f, 1.f - cos_theta * cos_theta));
-        // float phi = 2.f * Pi * v;
+        // float sin_theta = std::sqrt(std::max(0.f, 1.f - cos_theta *
+        // cos_theta)); float phi = 2.f * Pi * v;
         float sin_theta_2 = 1.f - cos_theta * cos_theta;
 
-        float cos_alpha = sin_theta_2 / sin_theta_max + cos_theta * std::sqrt(1 - sin_theta_2 / (sin_theta_max * sin_theta_max));
+        float cos_alpha =
+            sin_theta_2 / sin_theta_max +
+            cos_theta *
+                std::sqrt(1 - sin_theta_2 / (sin_theta_max * sin_theta_max));
         float sin_alpha = std::sqrt(1 - cos_alpha * cos_alpha);
-	    float phi = 2.f * Pi * v;
+        float phi       = 2.f * Pi * v;
         Frame frame(d);
 
         // float x = sin_theta * cos(phi);
@@ -133,20 +136,19 @@ public:
             its.t = d.dot(sample_dir);
 
         Point position = ray(its.t);
-        
+
         AreaSample sample;
         populate(sample, position);
-        Vector w = sample.position - origin;
-        dist2 = w.lengthSquared();
+        Vector w       = sample.position - origin;
+        dist2          = w.lengthSquared();
         float cosTheta = (-w / sqrt(dist2)).dot(sample.shadingNormal);
-        sample.pdf = Inv2Pi / (1.f - cos_theta_max) * cosTheta / dist2; // area pdf
+        sample.pdf =
+            Inv2Pi / (1.f - cos_theta_max) * cosTheta / dist2; // area pdf
 
         return sample;
     }
-    
-    std::string toString() const override {
-        return "Sphere[]";
-    }
+
+    std::string toString() const override { return "Sphere[]"; }
 };
 } // namespace lightwave
 REGISTER_SHAPE(Sphere, "sphere")

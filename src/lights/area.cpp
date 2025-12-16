@@ -15,27 +15,30 @@ public:
 
     DirectLightSample sampleDirect(const Point &origin,
                                    Sampler &rng) const override {
-        AreaSample sample = m_improvedSampling ? m_instance->sampleArea(origin, rng) : m_instance->sampleArea(rng);                  
+        AreaSample sample = m_improvedSampling
+                                ? m_instance->sampleArea(origin, rng)
+                                : m_instance->sampleArea(rng);
 
-        Vector w = sample.position - origin;
+        Vector w    = sample.position - origin;
         float dist2 = w.lengthSquared();
-        float dist = sqrt(dist2);
+        float dist  = sqrt(dist2);
         w /= dist;
 
         // float cosTheta = (-w).dot(sample.shadingNormal);
         float cosTheta = (-w).dot(sample.geometryNormal);
-        if (cosTheta <= Epsilon) 
+        if (cosTheta <= Epsilon)
             return DirectLightSample::invalid();
-        
+
         // p(w) = p(y) * dist2 / cosTheta
         float pdf = std::max(sample.pdf * dist2 / cosTheta, Epsilon);
 
         Frame frame(sample.shadingNormal);
-        EmissionEval emission = m_instance->emission()->evaluate(sample.uv, frame.toLocal(-w));
+        EmissionEval emission =
+            m_instance->emission()->evaluate(sample.uv, frame.toLocal(-w));
 
         return DirectLightSample{
-            .wi = w,
-            .weight = emission.value / pdf, 
+            .wi       = w,
+            .weight   = emission.value / pdf,
             .distance = dist,
         };
     }
