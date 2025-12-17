@@ -3,20 +3,19 @@
 namespace lightwave {
 
 class AreaLight final : public Light {
-    ref<Shape> m_shape;
-    ref<Emission> m_emission;
+    ref<Instance> m_instance;
     bool m_improvedSampling;
 
 public:
     AreaLight(const Properties &properties) : Light(properties) {
-        m_shape = properties.getChild<Shape>();
-        m_emission = properties.getChild<Emission>();
+        m_instance = properties.getChild<Instance>();
+        m_instance->setLight(this);
         m_improvedSampling = properties.get<bool>("improved", true);
     }
 
     DirectLightSample sampleDirect(const Point &origin,
                                    Sampler &rng) const override {
-        AreaSample sample = m_improvedSampling ? m_shape->sampleArea(origin, rng) : m_shape->sampleArea(rng);                  
+        AreaSample sample = m_improvedSampling ? m_instance->sampleArea(origin, rng) : m_instance->sampleArea(rng);                  
 
         Vector w = sample.position - origin;
         float dist2 = w.lengthSquared();
@@ -31,7 +30,7 @@ public:
         float pdf = std::max(sample.pdf * dist2 / cosTheta, Epsilon);
 
         Frame frame(sample.shadingNormal);
-        EmissionEval emission = m_emission->evaluate(sample.uv, frame.toLocal(-w));
+        EmissionEval emission = m_instance->emission()->evaluate(sample.uv, frame.toLocal(-w));
 
         return DirectLightSample{
             .wi = w,
@@ -40,7 +39,7 @@ public:
         };
     }
 
-    bool canBeIntersected() const override { return true; }
+    bool canBeIntersected() const override { return m_instance->isVisible(); }
 
     std::string toString() const override {
         return tfm::format(
