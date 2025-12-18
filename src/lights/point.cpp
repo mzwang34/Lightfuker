@@ -20,7 +20,7 @@ public:
         w /= dist;
 
         Color weight = m_power * Inv4Pi / dist2;
-        return DirectLightSample{ w, weight, dist };
+        return DirectLightSample{ w, weight, dist, 1.f };
     }
 
     bool canBeIntersected() const override { return false; }

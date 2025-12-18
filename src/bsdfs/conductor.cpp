@@ -23,7 +23,7 @@ public:
         // NOT_IMPLEMENTED
         Vector wi    = Vector(-wo.x(), -wo.y(), wo.z());
         Color weight = m_reflectance.get()->evaluate(uv);
-        return BsdfSample{ wi, weight };
+        return BsdfSample{ wi, weight, 1.f };
     }
 
     std::string toString() const override {
