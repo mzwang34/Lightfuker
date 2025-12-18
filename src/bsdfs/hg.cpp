@@ -15,7 +15,8 @@ public:
     BsdfEval evaluate(const Point2 &uv, const Vector &wo,
                       const Vector &wi) const override {
         float g2 = m_g * m_g;
-        return BsdfEval{ m_albedo * Inv4Pi * (1.f - g2) / pow(1.f + g2 + 2.f * m_g * wi.dot(wo), 1.5f) };
+        float pdf =  Inv4Pi * (1.f - g2) / pow(1.f + g2 + 2.f * m_g * wi.dot(wo), 1.5f);
+        return BsdfEval{ m_albedo * pdf, pdf};
     }
 
     BsdfSample sample(const Point2 &uv, const Vector &wo,
@@ -32,7 +33,9 @@ public:
         float sinTheta = sqrt(std::max(0.f, 1.f - cosTheta * cosTheta));
         Vector w{ sinTheta * cos(phi), sinTheta * sin(phi), cosTheta };
 
-        return BsdfSample{ w, m_albedo };
+        float pdf =  Inv4Pi * (1.f -  m_g * m_g) / pow(1.f +  m_g * m_g + 2.f * m_g * cosTheta, 1.5f);
+
+        return BsdfSample{ w, m_albedo, pdf };
     }
 
     std::string toString() const override {

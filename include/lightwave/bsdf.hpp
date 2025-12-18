@@ -18,6 +18,7 @@ struct BsdfSample {
     /// @brief The weight of the sample, given by @code cos(theta) * B(wi, wo) /
     /// p(wi) @endcode
     Color weight;
+    float pdf;
 
     /// @brief Return an invalid sample, used to denote that sampling has
     /// failed.
@@ -25,6 +26,7 @@ struct BsdfSample {
         return {
             .wi     = Vector(0),
             .weight = Color(0),
+            .pdf = 0.f,
         };
     }
 
@@ -40,11 +42,13 @@ struct BsdfEval {
     /// @brief The value of the Bsdf, given by @code cos(theta) * B(wi, wo)
     /// @endcode
     Color value;
+    float pdf;
 
     /// @brief Indicates that the Bsdf is zero for the given pair of directions.
     static BsdfEval invalid() {
         return {
             .value = Color(0),
+            .pdf = 0.f,
         };
     }
 

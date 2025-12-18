@@ -12,7 +12,7 @@ struct DiffuseLobe {
         // NOT_IMPLEMENTED
         if (!Frame::sameHemisphere(wi, wo))
             return BsdfEval::invalid();
-        return BsdfEval{ color * InvPi * Frame::cosTheta(wi) };
+        return BsdfEval{ color * InvPi * Frame::cosTheta(wi), abs(wi.z()) * InvPi };
 
         // hints:
         // * copy your diffuse bsdf evaluate here
@@ -28,7 +28,7 @@ struct DiffuseLobe {
         if (!Frame::sameHemisphere(wi, wo))
             return BsdfSample::invalid();
 
-        return BsdfSample{ wi, weight };
+        return BsdfSample{ wi, weight, abs(wi.z()) * InvPi };
         // hints:
         // * copy your diffuse bsdf evaluate here
         // * you do not need to query a texture, the albedo is given by `color`
@@ -44,10 +44,11 @@ struct MetallicLobe {
         if (!Frame::sameHemisphere(wi, wo))
             return BsdfEval::invalid();
         Vector wm = (wi + wo).normalized();
+        float pdf = microfacet::pdfGGXVNDF(alpha, wm, wo) / (4 * abs(wo.z()));
         return { color * microfacet::evaluateGGX(alpha, wm) *
                  microfacet::smithG1(alpha, wm, wi) *
                  microfacet::smithG1(alpha, wm, wo) /
-                 (4 * abs(Frame::cosTheta(wo))) };
+                 (4 * abs(Frame::cosTheta(wo))), pdf };
         // hints:
         // * copy your roughconductor bsdf evaluate here
         // * you do not need to query textures
@@ -61,7 +62,8 @@ struct MetallicLobe {
         Vector wi = reflect(wo, wm);
         if (!Frame::sameHemisphere(wi, wo))
             return BsdfSample::invalid();
-        return { wi, color * microfacet::smithG1(alpha, wm, wi) };
+        float pdf = microfacet::pdfGGXVNDF(alpha, wm, wo) / (4 * abs(wo.z()));
+        return { wi, color * microfacet::smithG1(alpha, wm, wi), pdf };
         // hints:
         // * copy your roughconductor bsdf sample here
         // * you do not need to query textures
@@ -124,7 +126,9 @@ public:
         const auto combination = combine(uv, wo);
         // NOT_IMPLEMENTED
         return { combination.diffuse.evaluate(wo, wi).value +
-                 combination.metallic.evaluate(wo, wi).value };
+                 combination.metallic.evaluate(wo, wi).value,
+                 combination.diffuse.evaluate(wo, wi).pdf * combination.diffuseSelectionProb +
+                 combination.metallic.evaluate(wo, wi).pdf * (1 - combination.diffuseSelectionProb) };
         // hint: evaluate `combination.diffuse` and `combination.metallic` and
         // combine their results
     }
@@ -138,11 +142,11 @@ public:
         if (rng.next() < combination.diffuseSelectionProb) {
             BsdfSample s = combination.diffuse.sample(wo, rng);
             s.weight /= combination.diffuseSelectionProb;
-            return { s.wi, s.weight };
+            return { s.wi, s.weight, combination.diffuseSelectionProb * s.pdf };
         } else {
             BsdfSample s = combination.metallic.sample(wo, rng);
             s.weight /= (1.f - combination.diffuseSelectionProb);
-            return { s.wi, s.weight };
+            return { s.wi, s.weight, (1.f - combination.diffuseSelectionProb) * s.pdf };
         }
 
         // hint: sample either `combination.diffuse` (probability

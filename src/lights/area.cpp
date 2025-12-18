@@ -40,6 +40,7 @@ public:
             .wi       = w,
             .weight   = emission.value / pdf,
             .distance = dist,
+            .pdf = pdf,
         };
     }
 
