@@ -13,7 +13,7 @@ public:
     EmissionEval evaluate(const Point2 &uv, const Vector &wo) const override {
         if (Vector(0.0f, 0.f, 1.f).dot(wo) < 0)
             return EmissionEval::invalid();
-        return EmissionEval{ m_emission.get()->evaluate(uv) };
+        return EmissionEval{ m_emission.get()->evaluate(uv), Inv2Pi };
     }
 
     std::string toString() const override {

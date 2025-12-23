@@ -19,6 +19,7 @@ public:
         sample.wi                = (m_dir).normalized();
         sample.distance          = Infinity;
         sample.weight            = m_intensity;
+        sample.pdf               = 1.f;
         return sample;
     }
 
