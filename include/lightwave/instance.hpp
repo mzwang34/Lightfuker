@@ -43,6 +43,8 @@ class Instance : public Shape {
     /// could be hit by ray tracing.
     bool m_visible;
 
+    ref<Texture> m_alpha;
+ 
     /// @brief Transforms the frame from object coordinates to world
     /// coordinates.
     inline void transformFrame(SurfaceEvent &surf, const Vector &wo) const;
@@ -54,6 +56,7 @@ public:
         m_emission  = properties.getOptionalChild<Emission>();
         m_transform = properties.getOptionalChild<Transform>();
         m_visible = false;
+        m_alpha     = properties.get<Texture>("alpha", nullptr);
     }
 
     /// @brief Returns the shape.
@@ -108,6 +111,7 @@ public:
      * @param rng A random number generator used to steer sampling decisions.
      */
     AreaSample sampleArea(Sampler &rng) const override;
+    bool hasAlpha(Intersection &its, Sampler &rng) const;
 
     /// @brief Returns a textual representation of this image.
     std::string toString() const override {

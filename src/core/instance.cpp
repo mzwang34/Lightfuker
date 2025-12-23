@@ -45,6 +45,13 @@ inline void validateIntersection(const Intersection &its) {
     });
 }
 
+bool Instance::hasAlpha(Intersection &its, Sampler &rng) const {
+    if (!m_alpha) return false;
+    float alpha = m_alpha->scalar(its.uv);
+    if (alpha < rng.next()) return true;
+    return false;
+}
+
 bool Instance::intersect(const Ray &worldRay, Intersection &its,
                          Sampler &rng) const {
     if (!m_transform) {
@@ -52,6 +59,7 @@ bool Instance::intersect(const Ray &worldRay, Intersection &its,
         const Ray localRay        = worldRay;
         const bool wasIntersected = m_shape->intersect(localRay, its, rng);
         if (wasIntersected) {
+            if (hasAlpha(its, rng)) return false;
             its.instance = this;
             validateIntersection(its);
         }
@@ -71,6 +79,10 @@ bool Instance::intersect(const Ray &worldRay, Intersection &its,
 
     const bool wasIntersected = m_shape->intersect(localRay, its, rng);
     if (wasIntersected) {
+        if (hasAlpha(its, rng)) {
+            its.t = previousT;
+            return false;
+        }
         its.instance = this;
         validateIntersection(its);
         // hint: how does its.t need to change?
