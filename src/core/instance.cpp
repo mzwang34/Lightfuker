@@ -15,7 +15,8 @@ void Instance::transformFrame(SurfaceEvent &surf, const Vector &wo) const {
 
     surf.tangent = Frame(surf.shadingNormal).tangent;
 
-    surf.pdf = 0.f; // TODO
+    float scale = m_transform->apply(Vector(1, 0, 0)).length();
+    surf.pdf /= (scale * scale); // uniform scale only
 }
 
 inline void validateIntersection(const Intersection &its) {
@@ -149,6 +150,13 @@ Point Instance::getCentroid() const {
 
 AreaSample Instance::sampleArea(Sampler &rng) const {
     AreaSample sample = m_shape->sampleArea(rng);
+    transformFrame(sample, Vector());
+    return sample;
+}
+
+AreaSample Instance::sampleArea(const Point& origin, Sampler &rng) const {
+    Point localOrigin = m_transform->inverse(origin);
+    AreaSample sample = m_shape->sampleArea(localOrigin, rng);
     transformFrame(sample, Vector());
     return sample;
 }

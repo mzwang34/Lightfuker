@@ -112,6 +112,7 @@ public:
      */
     AreaSample sampleArea(Sampler &rng) const override;
     bool hasAlpha(Intersection &its, Sampler &rng) const;
+    AreaSample sampleArea(const Point &origin, Sampler &rng) const override;
 
     /// @brief Returns a textual representation of this image.
     std::string toString() const override {
