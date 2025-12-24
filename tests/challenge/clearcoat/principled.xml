@@ -16,8 +16,8 @@
         <instance>
             <shape type="sphere"/>
             <bsdf type="principled">
-                <texture name="baseColor" type="constant" value="0.5,0,0"/>
-                <texture name="roughness" type="constant" value="0.8"/>
+                <texture name="baseColor" type="constant" value="0.4,0,0"/>
+                <texture name="roughness" type="constant" value="0.6"/>
                 <texture name="metallic" type="constant" value="0"/>
                 <texture name="specular" type="constant" value="0.5"/>
             </bsdf>

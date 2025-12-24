@@ -145,7 +145,7 @@ class PrincipledClearcoat : public Bsdf {
         };
         const ClearcoatLobe clearcoatLobe = {
             .alpha = clearcoatGloss,
-            .color = Color(clearcoat) * 0.25f,
+            .color = Color(clearcoat),
         };
 
         float clearcoatWeight = saturate(clearcoat);
@@ -153,13 +153,7 @@ class PrincipledClearcoat : public Bsdf {
         float metallicWeight = metallicLobe.color.mean();
         float norm = 1.f / (clearcoatWeight + diffuseWeight + metallicWeight);
 
-
-        // const auto diffuseAlbedo = diffuseLobe.color.mean();
-        // const auto totalAlbedo =
-            // diffuseLobe.color.mean() + metallicLobe.color.mean();
         return {
-            // .diffuseSelectionProb =
-            //     totalAlbedo > 0 ? diffuseAlbedo / totalAlbedo : 1.0f,
             .diffuseSelectionProb = diffuseWeight * norm,
             .metallicSelectionProb = metallicWeight * norm,
             .clearcoatSelectionProb = clearcoatWeight * norm,
@@ -184,8 +178,12 @@ public:
         PROFILE("Principled")
 
         const auto combination = combine(uv, wo);
-        return { combination.diffuse.evaluate(wo, wi).value +
-                 combination.metallic.evaluate(wo, wi).value +
+
+        Vector wm = (wi + wo).normalized();
+        float Fc = schlick(0.04f, wo.dot(wm)) * combination.clearcoat.color.mean();
+
+        return { (combination.diffuse.evaluate(wo, wi).value +
+                 combination.metallic.evaluate(wo, wi).value) * (1.f - Fc) +
                  combination.clearcoat.evaluate(wo, wi).value,
                  combination.diffuse.evaluate(wo, wi).pdf * combination.diffuseSelectionProb +
                  combination.metallic.evaluate(wo, wi).pdf * combination.metallicSelectionProb +
@@ -204,10 +202,16 @@ public:
             return { s.wi, s.weight, combination.clearcoatSelectionProb * s.pdf };
         } else if (p > combination.clearcoatSelectionProb && p <= (combination.clearcoatSelectionProb + combination.metallicSelectionProb)) {
             BsdfSample s = combination.metallic.sample(wo, rng);
+            Vector wm = (wo + s.wi).normalized();
+            float Fc = schlick(0.04f, wo.dot(wm)) * combination.clearcoat.color.mean();
+            s.weight *= (1.f - Fc);
             s.weight /= combination.metallicSelectionProb;
             return { s.wi, s.weight, combination.metallicSelectionProb * s.pdf };
         } else {
             BsdfSample s = combination.diffuse.sample(wo, rng);
+            Vector wm = (wo + s.wi).normalized();
+            float Fc = schlick(0.04f, wo.dot(wm)) * combination.clearcoat.color.mean();
+            s.weight *= (1.f - Fc);
             s.weight /= combination.diffuseSelectionProb;
             return { s.wi, s.weight, combination.diffuseSelectionProb * s.pdf };
         }
