@@ -35,4 +35,32 @@ public:
     }
 };
 
+class ImageTexture : public Texture {
+    enum class BorderMode {
+        Clamp,
+        Repeat,
+    };
+
+    enum class FilterMode {
+        Nearest,
+        Bilinear,
+    };
+
+    ref<Image> m_image;
+    float m_exposure;
+    BorderMode m_border;
+    FilterMode m_filter;
+
+public:
+    ImageTexture(const Properties &properties);
+
+    Color evaluate(const Point2 &uv) const override;
+
+    std::string toString() const override;
+
+    const Image* getImage() const {
+        return m_image.get();
+    }
+};
+
 } // namespace lightwave
