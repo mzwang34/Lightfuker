@@ -16,12 +16,12 @@
         <instance>
             <shape type="sphere"/>
             <bsdf type="principled_clearcoat">
-                <texture name="baseColor" type="constant" value="0.5,0,0"/>
-                <texture name="roughness" type="constant" value="0.8"/>
+                <texture name="baseColor" type="constant" value="0.4,0,0"/>
+                <texture name="roughness" type="constant" value="0.6"/>
                 <texture name="metallic" type="constant" value="0"/>
                 <texture name="specular" type="constant" value="0.5"/>
-                <texture name="clearcoat" type="constant" value="0.5"/>
-                <texture name="clearcoatRoughness" type="constant" value="0.1"/>
+                <texture name="clearcoat" type="constant" value="1"/>
+                <texture name="clearcoatGloss" type="constant" value="1"/>
             </bsdf>
         </instance>
 
