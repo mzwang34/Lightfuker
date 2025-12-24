@@ -1,0 +1,41 @@
+<integrator type="pathtracer_mis" depth="5">
+    <image id="clearcoat" />
+    <scene id="scene">
+        <camera type="perspective" id="camera">
+            <integer name="width" value="512"/>
+            <integer name="height" value="512"/>
+            <string name="fovAxis" value="x"/>
+            <float name="fov" value="40"/>
+            <transform>
+                <translate z="-8"/>
+            </transform>
+        </camera>
+
+        <light type="directional" direction="-0.8,-1,-1" intensity="1.4,1.25,1.1"/>
+
+        <instance>
+            <shape type="sphere"/>
+            <bsdf type="principled_clearcoat">
+                <texture name="baseColor" type="constant" value="0.5,0,0"/>
+                <texture name="roughness" type="constant" value="0.8"/>
+                <texture name="metallic" type="constant" value="0"/>
+                <texture name="specular" type="constant" value="0.5"/>
+                <texture name="clearcoat" type="constant" value="0.5"/>
+                <texture name="clearcoatRoughness" type="constant" value="0.1"/>
+            </bsdf>
+        </instance>
+
+        <instance>
+            <shape type="rectangle"/>
+            <bsdf type="diffuse">
+                <texture name="albedo" type="checkerboard" scale="16,8" color0="0.08,0.25,0.70" color1="0.9" />
+            </bsdf>
+            <transform>
+                <rotate axis="1,0,0" angle="90"/>
+                <scale value="10"/>
+                <translate y="1"/>
+            </transform>
+        </instance>
+    </scene>
+    <sampler type="independent" count="64"/>
+</integrator>

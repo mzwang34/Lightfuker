@@ -116,8 +116,8 @@ public:
         m_transform = properties.getOptionalChild<Transform>();
         m_importanceSampling = properties.get<bool>("importanceSampling", true);
 
-        if (m_importanceSampling) {
-            auto imageTex = std::dynamic_pointer_cast<ImageTexture>(m_texture);
+        auto imageTex = std::dynamic_pointer_cast<ImageTexture>(m_texture);
+        if (m_importanceSampling && imageTex) {
             Point2i res = imageTex->getImage()->resolution();
             int width = res.x(), height = res.y();
             std::unique_ptr<float[]> img(new float[width * height]);
@@ -130,6 +130,8 @@ public:
                 } 
             }
             m_distribution.reset(new Distribution2D(img.get(), width, height));
+        } else {
+            m_importanceSampling = false;
         }
     }
 
