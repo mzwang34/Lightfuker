@@ -145,7 +145,7 @@ class PrincipledClearcoat : public Bsdf {
         };
         const ClearcoatLobe clearcoatLobe = {
             .alpha = clearcoatGloss,
-            .color = Color(clearcoat),
+            .color = Color(clearcoat) * 0.25f,
         };
 
         float clearcoatWeight = saturate(clearcoat);
