@@ -10,8 +10,15 @@ void Instance::transformFrame(SurfaceEvent &surf, const Vector &wo) const {
 
     surf.geometryNormal =
         m_transform->applyNormal(surf.geometryNormal).normalized();
-    surf.shadingNormal =
-        m_transform->applyNormal(surf.shadingNormal).normalized();
+    if (m_normal) {
+        Vector local_normal = (m_normal->evaluate(surf.uv)).data();
+        Vector normal =
+            surf.shadingFrame().toWorld(local_normal * 2.f - Vector(1.f));
+        surf.shadingNormal = m_transform->applyNormal(normal).normalized();
+    } else {
+        surf.shadingNormal =
+            m_transform->applyNormal(surf.shadingNormal).normalized();
+    }
 
     surf.tangent = Frame(surf.shadingNormal).tangent;
 
