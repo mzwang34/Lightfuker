@@ -46,6 +46,7 @@ public:
                 its.position       = ray(t_target);
                 its.shadingNormal  = -ray.direction;
                 its.geometryNormal = -ray.direction;
+                its.tangent        = Frame(its.shadingNormal).tangent;
                 return true;
             }
 
@@ -56,6 +57,7 @@ public:
                 its.position       = ray(t);
                 its.shadingNormal  = -ray.direction;
                 its.geometryNormal = -ray.direction;
+                its.tangent        = Frame(its.shadingNormal).tangent;
                 return true;
             }
         }
