@@ -54,7 +54,7 @@ public:
         } else {
             float denom = sqr(wi.dot(wm) + wo.dot(wm) / etap) * cosTheta_o;
             value = c_transmit * D * G1_i * G1_o * std::abs(wi.dot(wm) * wo.dot(wm) / denom);
-            pdf = (1 - R) * microfacet::pdfGGXVNDF(alpha, wm, wo) * abs(wi.dot(wm)) / microfacet::detRefraction(wm, wi, wo, etap);
+            pdf = (1 - R) * microfacet::pdfGGXVNDF(alpha, wm, wo) / microfacet::detRefraction(wm, wi, wo, etap);
         }
         return BsdfEval{ value, pdf };
     }
@@ -84,7 +84,7 @@ public:
                 return BsdfSample::invalid();
             float denom = sqr(wi.dot(wm) + wo.dot(wm) / etap) * cosTheta_o;
             weight = m_transmittance->evaluate(uv) * microfacet::smithG1(alpha, wm, wi);
-            pdf = (1 - R) * microfacet::pdfGGXVNDF(alpha, wm, wo) * abs(wi.dot(wm)) / microfacet::detRefraction(wm, wi, wo, etap);
+            pdf = (1 - R) * microfacet::pdfGGXVNDF(alpha, wm, wo) / microfacet::detRefraction(wm, wi, wo, etap);
         }
         return BsdfSample { wi, weight, pdf };
     }
