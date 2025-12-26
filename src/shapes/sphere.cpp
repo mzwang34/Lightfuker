@@ -15,7 +15,7 @@ class Sphere : public Shape {
         surf.position = position;
 
         Vector n           = Vector(surf.position).normalized();
-        surf.tangent       = Frame(n).tangent;
+        surf.tangent = Vector(-n.z(), 0, n.x()).normalized();
         surf.shadingNormal = surf.geometryNormal = n;
 
         surf.uv = sphericalCoordinates(n);

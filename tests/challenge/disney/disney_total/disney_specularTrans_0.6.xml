@@ -1,0 +1,29 @@
+<integrator type="pathtracer_mis" depth="5">
+    <image id="disney_specularTrans_0.6"/>
+    <scene id="scene">
+        <camera type="perspective" id="camera">
+            <integer name="width" value="512"/>
+            <integer name="height" value="512"/>
+            <string name="fovAxis" value="x"/>
+            <float name="fov" value="40"/>
+            <transform>
+                <translate z="-8"/>
+            </transform>
+        </camera>
+        <light type="envmap">
+            <texture type="image" filename="../../../textures/kloofendal_overcast_1k.hdr" exposure="0.5"/>
+            <transform>
+                <rotate axis="0,1,0" angle="120"/>
+            </transform>
+        </light>
+        <instance>
+            <shape type="sphere"/>
+            <bsdf type="disney">
+                <texture name="baseColor" type="constant" value="1"/>
+                <float name="specularTrans" value="0.6"/>
+                <float name="roughness" value="0.1"/>
+            </bsdf>
+        </instance>
+    </scene>
+    <sampler type="independent" count="256"/>
+</integrator>

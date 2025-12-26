@@ -21,7 +21,7 @@ inline float schlickWeight(float cosTheta) {
  * 1994].
  */
 template <typename T> inline T schlick(T F0, float cosTheta) {
-    return F0 + (1 - F0) * schlickWeight(cosTheta);
+    return F0 + (T(1) - F0) * schlickWeight(cosTheta);
 }
 
 /**
