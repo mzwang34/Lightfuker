@@ -1,0 +1,33 @@
+<integrator type="direct">
+    <image id="tmp" />
+    <scene id="scene">
+        <camera type="perspective" id="camera">
+            <integer name="width" value="512"/>
+            <integer name="height" value="512"/>
+            <string name="fovAxis" value="x"/>
+            <float name="fov" value="60"/>
+            <transform>
+                <rotate axis="1,0,0" angle="6.5"/>
+                <translate z="-3"/>
+            </transform>
+        </camera>
+        <instance>
+            <shape type="rectangle"/>
+            <emission type="lambertian">
+                <texture name="emission" type="image" filename="../../textures/text_emission.png" exposure="10"/>
+            </emission>
+            <transform>
+                <rotate axis="1,0,0" angle="240"/>
+                <scale value="2"/>
+                <translate y="-1.4" z="1"/>
+            </transform>
+        </instance>
+    </scene>
+    <sampler type="independent" count="128"/>
+</integrator>
+
+<postprocess type="bloom">
+    <ref name="input" id="tmp" />
+    <image id="bloom" />
+</postprocess>
+
