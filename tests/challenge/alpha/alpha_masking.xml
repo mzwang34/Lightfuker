@@ -1,0 +1,35 @@
+<integrator type="direct">
+    <image id="alpha_masking"/>
+    <scene id="scene">
+            <camera type="perspective" id="camera">
+                <integer name="width" value="400"/>
+                <integer name="height" value="400"/>
+
+                <string name="fovAxis" value="x"/>
+                <float name="fov" value="40"/>
+
+                <transform>
+                    <translate z="-4"/>
+                </transform>
+            </camera>
+
+            <light type="envmap" weight="0">
+                <texture type="constant" value="0.8,0.6,1"/>
+            </light>
+            <light type="directional" direction="-0.8,-1,-1" intensity="2.1,1.88,1.65"/>
+
+            <instance>
+                <shape type="sphere"/>
+                <bsdf type="diffuse">
+                    <texture name="albedo" type="image" filename="textures/grass.jpg"/>
+                </bsdf>
+                <texture name="alpha" type="image" filename="textures/grass_alpha.png"/>
+                <transform>
+                    <scale value="0.5"/>
+                    <translate y="0.5" z="-0.1"/>
+                </transform>
+            </instance>
+        </scene>
+    <sampler type="independent" count="64"/>
+</integrator>
+
