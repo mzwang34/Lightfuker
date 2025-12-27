@@ -1,0 +1,32 @@
+<integrator type="pathtracer_mis" depth="5">
+    <image id="bokeh" />
+    <scene id="scene">
+        <camera type="thinlens" id="camera">
+            <integer name="width" value="512"/>
+            <integer name="height" value="512"/>
+            <string name="fovAxis" value="x"/>
+            <float name="fov" value="40"/>
+            <float name="lensRadius" value="1.5"/>
+            <float name="focalDistance" value="5.0"/>
+            <texture name="bokeh" type="image" filename="bokeh_heart.png" /> 
+            <transform>
+                <translate z="-5"/> 
+            </transform>
+        </camera>
+
+        <light type="directional" direction="0, 0, -1" intensity="10"/>
+
+        <instance>
+            <shape type="sphere"/>
+            <bsdf type="diffuse">
+                <texture name="albedo" type="constant" value="10,10,0"/> 
+            </bsdf>
+            <transform>
+                <scale value="0.1"/> 
+                <translate x="0" y="0" z="10"/>
+            </transform>
+        </instance>
+
+    </scene>
+    <sampler type="independent" count="64"/>
+</integrator>

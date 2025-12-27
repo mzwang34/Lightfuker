@@ -9,6 +9,7 @@ public:
         const std::string fovAxis = properties.get<std::string>("fovAxis");
         m_lensRadius              = properties.get<float>("lensRadius", 0.f);
         m_focalDistance           = properties.get<float>("focalDistance", 1.f);
+        m_bokeh                   = properties.get<Texture>("bokeh", nullptr);
 
         Vector z = Vector(0.0, 0.0, 1.0);
         float s_x_norm, s_y_norm;
@@ -32,8 +33,24 @@ public:
         Vector dir = (z + normalized.x() * s_x + normalized.y() * s_y).normalized();
 
         Point origin(0.f);
+        Color throughput(1.0f);
         if (m_lensRadius > 0) {
-            Point2 sLens = squareToUniformDiskConcentric(rng.next2D());
+            Point2 sLens;
+            if (m_bokeh) {
+                int cnt = 0;
+                while (cnt++ < 64) {
+                    Point2 s = rng.next2D(); 
+                    sLens = Point2(2 * s.x() - 1, 1 - 2 * s.y()); 
+
+                    Color c = m_bokeh->evaluate(s);
+                    if (c.luminance() > rng.next()) {
+                        throughput *= c;
+                        break;
+                    }
+                }
+            } else {
+                sLens = squareToUniformDiskConcentric(rng.next2D());
+            }
             Point pLens(m_lensRadius * sLens.x(), m_lensRadius * sLens.y(), 0.f);
 
             float ft = m_focalDistance / dir.z();
@@ -44,7 +61,7 @@ public:
         }
         Ray r(origin, dir);
         r = m_transform->apply(r);
-        return CameraSample{ r.normalized(), Color(1.0) };
+        return CameraSample{ r.normalized(), throughput };
     }
 
     std::string toString() const override {
@@ -62,6 +79,7 @@ public:
 protected:
     Vector s_x, s_y;
     float m_lensRadius, m_focalDistance;
+    ref<Texture> m_bokeh;
 };
 
 } // namespace lightwave
