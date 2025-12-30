@@ -548,6 +548,7 @@ public:
  * from one value to another. In two dimensions, this corresponds to a
  * rectangle.
  */
+struct Ray;
 template <typename T, int D> class TBounds {
 public:
     using Point  = TPoint<T, D>;
@@ -636,6 +637,8 @@ public:
         return result;
     }
 
+    bool intersectP(const Ray &ray, float tMax, float *hitt0, float *hitt1) const;
+
     /// @brief Returns a shifted version of this bounding box by some given
     /// vector.
     TBounds operator+(const Vector &shift) const {
@@ -717,6 +720,7 @@ using Point2 = TPoint<float, 2>;
 using Point2i = TPoint<int, 2>;
 /// @brief A three-dimensional point with floating point components.
 using Point = TPoint<float, 3>;
+using Pointi = TPoint<int, 3>;
 
 /// @brief A two-dimensional vector with floating point components.
 using Vector2 = TVector<float, 2>;
@@ -735,6 +739,7 @@ using Bounds2i = TBounds<int, 2>;
 /// @brief A three-dimensional axis-aligned bounding box with floating point
 /// components.
 using Bounds = TBounds<float, 3>;
+using Boundsi = TBounds<int, 3>;
 
 /// @brief A 3x3 matrix with floating point components.
 using Matrix3x3 = TMatrix<float, 3, 3>;
@@ -1016,6 +1021,26 @@ struct Intersection : public SurfaceEvent {
 
     Light *light() const;
 };
+
+template <typename T, int D>
+bool TBounds<T, D>::intersectP(const Ray &ray, float tMax, float *hitt0, float *hitt1) const {
+    float t0 = Epsilon, t1 = tMax;
+    for (int i = 0; i < 3; ++i) {
+        float invRayDir = 1.f / ray.direction[i];
+
+        float tNear = (m_min[i] - ray.origin[i]) * invRayDir;
+        float tFar = (m_max[i] - ray.origin[i]) * invRayDir;
+        if (tNear > tFar) std::swap(tNear, tFar);
+        tFar *= 1 + 2 * 3.f * Epsilon / (1.f - 3 * Epsilon);
+
+        t0 = tNear > t0 ? tNear : t0;
+        t1 = tFar < t1? tFar : t1;
+        if (t0 > t1) return false;
+    }
+    if (hitt0) *hitt0 = t0;
+    if (hitt1) *hitt1 = t1;
+    return true;
+}
 
 /// @brief Print a given point to an output stream.
 template <typename Type, int Dimension>
