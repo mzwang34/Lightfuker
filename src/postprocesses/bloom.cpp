@@ -38,7 +38,7 @@ public:
                 Point2i p{ x, y };
                 const Color &c = (*m_input)(p);
                 if (c.luminance() > m_threshold)
-                    bright(p) = c;
+                    bright(p) = saturate((c - Color(m_threshold)) * 0.5f); // ue
             }
         }
 
