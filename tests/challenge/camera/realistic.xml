@@ -1,0 +1,60 @@
+<integrator type="pathtracer_mis" depth="5">
+    <image id="realistic" />
+    <scene id="scene">
+        <camera type="realistic" id="camera">
+            <integer name="width" value="512"/>
+            <integer name="height" value="512"/>
+            <string name="lensFile" value="D:/Documents/vision/code/electabuzz/tests/challenge/camera/dgauss.22mm.dat"/>
+            <float name="apertureDiameter" value="3"/>
+            <float name="focusDistance" value="3"/>
+            <float name="filmDiagonal" value="35.0"/>
+            <boolean name="simpleWeighting" value="true"/>
+            <transform>
+                <translate z="-28"/>
+            </transform>
+        </camera>
+
+        <light type="directional" direction="-0.8,-1,-1" intensity="1.4,1.25,1.1"/>
+
+        <instance>
+            <shape type="sphere"/>
+            <bsdf type="diffuse">
+                <texture name="albedo" type="constant" value="1, 0, 0"/>
+            </bsdf>
+        </instance>
+
+        <instance>
+            <shape type="sphere"/>
+            <bsdf type="diffuse">
+                <texture name="albedo" type="constant" value="1, 0, 0"/>
+            </bsdf>
+            <transform>
+                <translate x="-1.5" z="-3"/>
+            </transform>
+        </instance>
+
+        <instance>
+            <shape type="sphere"/>
+            <bsdf type="diffuse">
+                <texture name="albedo" type="constant" value="1, 0, 0"/>
+            </bsdf>
+            <transform>
+                <translate x="1.5" z="3"/>
+            </transform>
+        </instance>
+
+        <instance>
+            <shape type="rectangle"/>
+            <bsdf type="diffuse">
+                <texture name="albedo" type="checkerboard" scale="16,8" color0="0.08,0.25,0.70" color1="0.9" />
+            </bsdf>
+            <transform>
+                <rotate axis="1,0,0" angle="90"/>
+                <scale value="10"/>
+                <translate y="1"/>
+            </transform>
+        </instance>
+    </scene>
+
+    <sampler type="independent" count="64"/>
+</integrator>

@@ -596,6 +596,11 @@ public:
         m_max = elementwiseMax(m_max, point);
     }
 
+    void expand(const float delta) {
+        m_min = m_min - Vector(delta);
+        m_max = m_max + Vector(delta);
+    }
+
     /// @brief Returns whether the bounding box is empty.
     bool isEmpty() const {
         for (int dim = 0; dim < Dimension; dim++) {
@@ -736,6 +741,7 @@ using Vector4 = TVector<float, 4>;
 
 /// @brief An integer rectangle (e.g., to describe the blocks of an image).
 using Bounds2i = TBounds<int, 2>;
+using Bounds2f = TBounds<float, 2>;
 /// @brief A three-dimensional axis-aligned bounding box with floating point
 /// components.
 using Bounds = TBounds<float, 3>;
