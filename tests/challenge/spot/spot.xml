@@ -1,0 +1,40 @@
+<integrator type="direct">
+    <image id="spotlight" />
+    <scene id="scene">
+        <camera type="perspective" id="camera">
+            <integer name="width" value="400"/>
+            <integer name="height" value="400"/>
+            <string name="fovAxis" value="x"/>
+            <float name="fov" value="40"/>
+            <transform>
+                <translate z="-4"/>
+            </transform>
+        </camera>
+
+        <light type="spot" position="0,-2,0" power="200" direction="0,1,0" angle="30.0" falloffStart="20.0" />
+
+        <instance>
+            <shape type="rectangle"/>
+            <bsdf type="diffuse">
+                <texture name="albedo" type="constant" value="0.9"/>
+            </bsdf>
+            <transform>
+                <rotate axis="1,0,0" angle="90"/>
+                <scale value="10"/>
+                <translate y="1"/>
+            </transform>
+        </instance>
+        
+        <instance>
+            <shape type="sphere"/>
+            <bsdf type="diffuse">
+                <texture name="albedo" type="constant" value="0.9"/>
+            </bsdf>
+            <transform>
+                <scale value="0.5"/>
+                <translate y="0.5" z="-0.1"/>
+            </transform>
+        </instance>
+    </scene>
+    <sampler type="independent" count="128"/>
+</integrator>
