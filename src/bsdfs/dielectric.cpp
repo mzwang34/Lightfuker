@@ -52,6 +52,10 @@ public:
         }
     }
 
+    Color getAlbedo(const Intersection &its) const override {
+        return m_transmittance->evaluate(its.uv);
+    }
+
     std::string toString() const override {
         return tfm::format(
             "Dielectric[\n"

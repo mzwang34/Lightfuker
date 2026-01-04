@@ -25,6 +25,10 @@ public:
             Intersection its = m_scene->intersect(ray, rng);
             if (its.background) return Color(0.f);
             return Color(its.stats.bvhCounter, its.stats.primCounter, 0.f) / m_scale;
+        } else if (m_variable == "albedo") {
+            Intersection its = m_scene->intersect(ray, rng);
+            if (!its || !its.instance->bsdf()) return Color(0.f);
+            return its.instance->bsdf()->getAlbedo(its);
         }
         return Color(0.f);
     }

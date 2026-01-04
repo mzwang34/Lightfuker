@@ -153,6 +153,10 @@ public:
         // `combination.diffuseSelectionProb`) or `combination.metallic`
     }
 
+    Color getAlbedo(const Intersection &its) const override {
+        return m_baseColor->evaluate(its.uv);
+    }
+
     std::string toString() const override {
         return tfm::format(
             "Principled[\n"

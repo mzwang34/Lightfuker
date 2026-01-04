@@ -33,6 +33,10 @@ public:
             "]",
             indent(m_reflectance));
     }
+
+    Color getAlbedo(const Intersection &its) const override {
+        return m_reflectance->evaluate(its.uv);
+    }
 };
 
 } // namespace lightwave

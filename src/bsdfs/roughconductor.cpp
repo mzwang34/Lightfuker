@@ -56,6 +56,10 @@ public:
         //   (the resulting sample weight is only a product of two factors)
     }
 
+    Color getAlbedo(const Intersection &its) const override {
+        return m_reflectance->evaluate(its.uv);
+    }
+
     std::string toString() const override {
         return tfm::format(
             "RoughConductor[\n"
