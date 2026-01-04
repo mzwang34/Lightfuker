@@ -94,6 +94,12 @@ public:
         return BsdfSample { wi, e.value / e.pdf, e.pdf };
     }
 
+    Color getAlbedo(const Intersection &its) const override {
+        float cosTheta = Frame::cosTheta(its.wo);
+        cosTheta = std::max(0.f, cosTheta);
+        return evaluateIridescence(cosTheta);
+    }
+
     std::string toString() const override {
         return tfm::format(
             "Iridescence[\n"

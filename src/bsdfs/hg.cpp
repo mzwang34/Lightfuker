@@ -38,6 +38,10 @@ public:
         return BsdfSample{ w, m_albedo, pdf };
     }
 
+    Color getAlbedo(const Intersection &its) const override {
+        return m_albedo;
+    }
+
     std::string toString() const override {
         return tfm::format(
             "HenyeyGreenstein[\n"
