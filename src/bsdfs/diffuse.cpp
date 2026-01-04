@@ -35,6 +35,10 @@ public:
         return BsdfSample{ wi, weight, abs(wi.z()) * InvPi };
     }
 
+    Color getAlbedo(const Intersection &its) const override {
+        return m_albedo->evaluate(its.uv);
+    }
+
     std::string toString() const override {
         return tfm::format(
             "Diffuse[\n"
