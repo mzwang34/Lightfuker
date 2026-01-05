@@ -20,9 +20,9 @@
             <shape type="sphere"/>
             <bsdf type="disney">
                 <texture name="baseColor" type="constant" value="0.8"/>
-                <float name="subsurface" value="0.3"/>
-                <float name="roughness" value="0.5"/>
-                <float name="specular" value="0.5"/>
+                <texture name="subsurface" type="constant" value="0.3"/>
+                <texture name="roughness" type="constant" value="0.5"/>
+                <texture name="specular" type="constant" value="0.5"/>
             </bsdf>
         </instance>
     </scene>
