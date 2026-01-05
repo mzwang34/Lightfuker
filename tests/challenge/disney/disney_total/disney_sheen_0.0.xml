@@ -20,8 +20,8 @@
             <shape type="sphere"/>
             <bsdf type="disney">
                 <texture name="baseColor" type="constant" value="0.1,0,0"/>
-                <float name="roughness" value="1"/>
-                <float name="sheen" value="0.0"/>
+                <texture name="roughness" type="constant" value="1"/>
+                <texture name="sheen" type="constant" value="0.0"/>
             </bsdf>
         </instance>
     </scene>

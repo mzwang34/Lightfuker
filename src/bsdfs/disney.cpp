@@ -233,17 +233,17 @@ struct DisneySheen {
 };
 
 class Disney : public Bsdf {
-    float m_subsurface;
-    float m_metallic;
-    float m_specular;
-    float m_specularTint;
-    float m_specurTrans;
-    float m_roughness;
-    float m_anisotropic;
-    float m_sheen;
-    float m_sheenTint;
-    float m_clearcoat;
-    float m_clearcoatGloss;
+    ref<Texture> m_subsurface;
+    ref<Texture> m_metallic;
+    ref<Texture> m_specular;
+    ref<Texture> m_specularTint;
+    ref<Texture> m_specularTrans;
+    ref<Texture> m_roughness;
+    ref<Texture> m_anisotropic;
+    ref<Texture> m_sheen;
+    ref<Texture> m_sheenTint;
+    ref<Texture> m_clearcoat;
+    ref<Texture> m_clearcoatGloss;
     ref<Texture> m_baseColor;
     float m_eta;
 
@@ -257,51 +257,59 @@ class Disney : public Bsdf {
 
 public:
     Disney(const Properties &properties) {
-        m_subsurface = properties.get<float>("subsurface", 0.f);
-        m_metallic = properties.get<float>("metallic", 0.f);
-        m_specular = properties.get<float>("specular", 0.f);
-        m_specularTint = properties.get<float>("specularTint", 0.f);
-        m_specurTrans = properties.get<float>("specularTrans", 0.f);
-        m_roughness = properties.get<float>("roughness", 0.f);
-        m_anisotropic = properties.get<float>("anisotropic", 0.f);
-        m_sheen = properties.get<float>("sheen", 0.f);
-        m_sheenTint = properties.get<float>("sheenTint", 0.f);
-        m_clearcoat = properties.get<float>("clearcoat", 0.f);
-        m_clearcoatGloss = properties.get<float>("clearcoatGloss", 0.f);
-        m_baseColor = properties.get<Texture>("baseColor");
+        m_subsurface = properties.get<Texture>("subsurface", nullptr);
+        m_metallic = properties.get<Texture>("metallic", nullptr);
+        m_specular = properties.get<Texture>("specular", nullptr);
+        m_specularTint = properties.get<Texture>("specularTint", nullptr);
+        m_specularTrans = properties.get<Texture>("specularTrans", nullptr);
+        m_roughness = properties.get<Texture>("roughness", nullptr);
+        m_anisotropic = properties.get<Texture>("anisotropic", nullptr);
+        m_sheen = properties.get<Texture>("sheen", nullptr);
+        m_sheenTint = properties.get<Texture>("sheenTint", nullptr);
+        m_clearcoat = properties.get<Texture>("clearcoat", nullptr);
+        m_clearcoatGloss = properties.get<Texture>("clearcoatGloss", nullptr);
+        m_baseColor = properties.get<Texture>("baseColor", nullptr);
         m_eta = properties.get<float>("eta", 1.5f);
     }
 
     Combination combine(const Point2 &uv, const Vector &wo) const {
-        const auto baseColor = m_baseColor->evaluate(uv);
+        const auto baseColor = m_baseColor? m_baseColor->evaluate(uv) : Color::white();
+        const auto roughness = m_roughness? m_roughness->scalar(uv) : 0.f;
+        const auto subsurface = m_subsurface? m_subsurface->scalar(uv) : 0.f;
+        const auto anisotropic = m_anisotropic? m_anisotropic->scalar(uv) : 0.f;
+        const auto specularTint = m_specularTint? m_specularTint->scalar(uv) : 0.f;
+        const auto specular = m_specular? m_specular->scalar(uv) : 0.f;
+        const auto metallic = m_metallic? m_metallic->scalar(uv) : 0.f;
+        const auto clearcoatGloss = m_clearcoatGloss? m_clearcoatGloss->scalar(uv) : 0.f;
+        const auto sheenTint = m_sheenTint? m_sheenTint->scalar(uv) : 0.f;
 
         const DisneyDiffuse disneyDiffuse = {
             .baseColor = baseColor,
-            .roughness = m_roughness,
-            .subsurface = m_subsurface,
+            .roughness = roughness,
+            .subsurface = subsurface,
         };
         const DisneyMetal disneyMetal = {
             .baseColor = baseColor,
-            .anisotropic = m_anisotropic,
-            .roughness = m_roughness,
-            .specularTint = m_specularTint,
-            .specular = m_specular,
-            .metallic = m_metallic,
+            .anisotropic = anisotropic,
+            .roughness = roughness,
+            .specularTint = specularTint,
+            .specular = specular,
+            .metallic = metallic,
             .eta = m_eta,
         };
         const DisneyClearcoat disneyClearcoat = {
             .baseColor = baseColor,
-            .clearcoatGloss = m_clearcoatGloss,
+            .clearcoatGloss = clearcoatGloss,
         };
         const DisneyGlass disneyGlass = {
             .baseColor = baseColor,
             .eta = m_eta,
-            .anisotropic = m_anisotropic,
-            .roughness = m_roughness,
+            .anisotropic = anisotropic,
+            .roughness = roughness,
         };
         const DisneySheen disneySheen = {
             .baseColor = baseColor,
-            .sheenTint = m_sheenTint,
+            .sheenTint = sheenTint,
         };
 
         return {
@@ -315,11 +323,16 @@ public:
 
     BsdfEval evaluate(const Point2 &uv, const Vector &wo,
                       const Vector &wi) const override {
-        float diffuseWeight = (1.f - m_specurTrans) * (1.f - m_metallic);
-        float metalWeight = (1.f - m_specurTrans * (1.f - m_metallic));
-        float glassWeight = (1.f - m_metallic) * m_specurTrans;
-        float clearcoatWeight = 0.25f * m_clearcoat;
-        float sheenWeight = (1.f  - m_metallic) * m_sheen;
+        const auto specularTrans = m_specularTrans? m_specularTrans->scalar(uv) : 0.f;
+        const auto metallic = m_metallic? m_metallic->scalar(uv) : 0.f;
+        const auto clearcoat = m_clearcoat? m_clearcoat->scalar(uv) : 0.f;
+        const auto sheen = m_sheen? m_sheen->scalar(uv) : 0.f;
+        
+        float diffuseWeight = (1.f - specularTrans) * (1.f - metallic);
+        float metalWeight = (1.f - specularTrans * (1.f - metallic));
+        float glassWeight = (1.f - metallic) * specularTrans;
+        float clearcoatWeight = 0.25f * clearcoat;
+        float sheenWeight = (1.f - metallic) * sheen;
 
         const auto comb = combine(uv, wo);
 
@@ -352,13 +365,18 @@ public:
 
     BsdfSample sample(const Point2 &uv, const Vector &wo,
                       Sampler &rng) const override {
+        const auto specularTrans = m_specularTrans? m_specularTrans->scalar(uv) : 0.f;
+        const auto metallic = m_metallic? m_metallic->scalar(uv) : 0.f;
+        const auto clearcoat = m_clearcoat? m_clearcoat->scalar(uv) : 0.f;
+        const auto sheen = m_sheen? m_sheen->scalar(uv) : 0.f;
+
         const auto comb = combine(uv, wo);
         float p = rng.next();
-        float diffuseWeight = (1.f - m_specurTrans) * (1.f - m_metallic);
-        float metalWeight = 1.f - m_specurTrans * (1.f - m_metallic);
-        float glassWeight = (1.f - m_metallic) * m_specurTrans;
-        float clearcoatWeight = 0.25f * m_clearcoat;
-        float sheenWeight = (1.f  - m_metallic) * m_sheen;
+        float diffuseWeight = (1.f - specularTrans) * (1.f - metallic);
+        float metalWeight = 1.f - specularTrans * (1.f - metallic);
+        float glassWeight = (1.f - metallic) * specularTrans;
+        float clearcoatWeight = 0.25f * clearcoat;
+        float sheenWeight = (1.f - metallic) * sheen;
 
         float totalWeight = diffuseWeight + metalWeight + glassWeight + clearcoatWeight;
         float invW = 1.f / totalWeight;
@@ -405,6 +423,7 @@ public:
             "  metallic       = %s,\n"
             "  specular       = %s,\n"
             "  specularTint   = %s,\n"
+            "  specularTrans  = %s,\n"
             "  roughness      = %s,\n"
             "  anisotropic    = %s,\n"
             "  sheen          = %s,\n"
@@ -413,17 +432,17 @@ public:
             "  clearcoatGloss = %s,\n"
             "  baseColor      = %s\n"
             "]",
-            m_subsurface,
-            m_metallic,
-            m_specular,
-            m_specularTint,
-            m_specurTrans,
-            m_roughness,
-            m_anisotropic,
-            m_sheen,
-            m_sheenTint,
-            m_clearcoat,
-            m_clearcoatGloss,
+            indent(m_subsurface),
+            indent(m_metallic),
+            indent(m_specular),
+            indent(m_specularTint),
+            indent(m_specularTrans),
+            indent(m_roughness),
+            indent(m_anisotropic),
+            indent(m_sheen),
+            indent(m_sheenTint),
+            indent(m_clearcoat),
+            indent(m_clearcoatGloss),
             indent(m_baseColor));
     }
 };

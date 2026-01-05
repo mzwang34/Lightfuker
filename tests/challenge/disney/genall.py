@@ -69,7 +69,7 @@ def process_files():
             if image_node is not None:
                 image_node.set("id", new_id)
 
-            target_node = bsdf.find(f"./float[@name='{param_name}']")
+            target_node = bsdf.find(f"./texture[@name='{param_name}']")
             target_node.set("value", f"{val:.1f}")
 
             output_path = os.path.join(OUTPUT_DIR, new_filename)
