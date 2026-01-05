@@ -90,6 +90,76 @@ public:
         return sample;
     }
 
+    AreaSample sampleArea(const Point &origin, Sampler &rng) const override {
+        // An Area-Preserving Parametrization for Spherical Rectangles EGSR 2013
+        // Rectangle corners (counter-clockwise)
+        Vector corners[4] = { Vector(-1.f, -1.f, 0.f),
+                              Vector(1.f, -1.f, 0.f),
+                              Vector(1.f, 1.f, 0.f),
+                              Vector(-1.f, 1.f, 0.f) };
+
+        // Directions to corners
+        Vector v[4];
+        for (int i = 0; i < 4; ++i)
+            v[i] = (corners[i] - origin).normalized();
+
+        // Total solid angle
+
+        float omega = 0.0f;
+
+        for (int i = 0; i < 4; ++i) {
+            const Vector &a = v[i];
+            const Vector &b = v[(i + 1) & 3];
+
+            float cosTheta = a.dot(b);
+            float sinTheta = a.cross(b).length();
+
+            omega += std::atan2(sinTheta, cosTheta);
+        }
+        omega = 2.0f * omega;
+
+        // Local frame (EGSR construction)
+        Vector ex = (v[1] - v[0]).normalized();
+        Vector ez = v[0].cross(v[1]).normalized();
+        Vector ey = ez.cross(ex);
+
+        auto frame = Frame(ex, ey, ez);
+
+        // Spherical bounds
+        float phiMin   = std::acos(v[0].z());
+        float phiMax   = std::acos(v[2].z());
+        float thetaMin = std::atan2(v[0].y(), v[0].x());
+        float thetaMax = std::atan2(v[2].y(), v[2].x());
+
+        // Uniform solid-angle sampling
+        Point2 uv = rng.next2D();
+        float phi = std::acos(std::cos(phiMin) +
+                              uv.x() * (std::cos(phiMax) - std::cos(phiMin)));
+
+        float theta = thetaMin + uv.y() * (thetaMax - thetaMin);
+
+        Vector sample_dir(std::sin(phi) * std::cos(theta),
+                          std::sin(phi) * std::sin(theta),
+                          std::cos(phi));
+
+        sample_dir = frame.toWorld(sample_dir);
+
+        Intersection its;
+        Ray ray(origin, sample_dir);
+        // fix floating precision error at edge
+        if (!intersect(ray, its, rng))
+            return AreaSample::invalid();
+
+        Point position = ray(its.t);
+
+        AreaSample sample;
+        populate(sample, position);
+
+        sample.pdf = 1.0f / omega; // area pdf
+
+        return sample;
+    }
+
     std::string toString() const override { return "Rectangle[]"; }
 };
 
