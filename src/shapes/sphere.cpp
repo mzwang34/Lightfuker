@@ -106,26 +106,44 @@ public:
 
         float sin_theta_max2 = 1.f / dist2;
         float cos_theta_max = std::sqrt(std::max(0.f, 1.f - sin_theta_max2));
-
         float cos_theta = 1.f - u * (1.f - cos_theta_max);
-        float sin_theta = std::sqrt(std::max(0.f, 1.f - cos_theta * cos_theta));
-        float phi = 2.f * Pi * v;
 
-        Frame frame(d);
+        // ---------- intersect method ----------
+        // float sin_theta = std::sqrt(std::max(0.f, 1.f - cos_theta * cos_theta));
+        // float phi = 2.f * Pi * v;
 
-        float x = sin_theta * cos(phi);
-        float y = sin_theta * sin(phi);
-        Vector sample_dir(x, y, cos_theta);
+        // Frame frame(d);
+
+        // float x = sin_theta * cos(phi);
+        // float y = sin_theta * sin(phi);
+        // Vector sample_dir(x, y, cos_theta);
+        // sample_dir = frame.toWorld(sample_dir);
+
+        // Intersection its;
+        // Ray ray(origin, sample_dir);
+        // // fix floating precision error at edge
+        // if (!intersect(ray, its, rng))
+        //     its.t = d.dot(sample_dir);
+
+        // Point position = ray(its.t);
+
+        // ---------- Fred Akalin's method ----------
+        float sin_theta_max = std::sqrt(sin_theta_max2);
+        float sin_theta_2 = 1.f - cos_theta * cos_theta;
+
+        float cos_alpha = sin_theta_2 / sin_theta_max + cos_theta * std::sqrt(1 - sin_theta_2 / (sin_theta_max * sin_theta_max));
+        float sin_alpha = std::sqrt(1 - cos_alpha * cos_alpha);
+	    float phi = 2.f * Pi * v;
+
+        Frame frame(-d);
+
+        float x = sin_alpha * cos(phi);
+        float y = sin_alpha * sin(phi);
+        Vector sample_dir(x, y, cos_alpha);
         sample_dir = frame.toWorld(sample_dir);
 
-        Intersection its;
-        Ray ray(origin, sample_dir);
-        // fix floating precision error at edge
-        if (!intersect(ray, its, rng))
-            its.t = d.dot(sample_dir);
+        Point position = getCentroid() + sample_dir;
 
-        Point position = ray(its.t);
-        
         AreaSample sample;
         populate(sample, position);
         Vector w = sample.position - origin;

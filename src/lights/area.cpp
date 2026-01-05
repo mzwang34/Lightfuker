@@ -22,7 +22,7 @@ public:
         float dist = sqrt(dist2);
         w /= dist;
 
-        float cosTheta = (-w).dot(sample.shadingNormal);
+        float cosTheta = (-w).dot(sample.geometryNormal);
         if (cosTheta <= Epsilon) 
             return DirectLightSample::invalid();
         
