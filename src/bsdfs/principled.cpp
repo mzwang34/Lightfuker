@@ -44,7 +44,7 @@ struct MetallicLobe {
         if (!Frame::sameHemisphere(wi, wo))
             return BsdfEval::invalid();
         Vector wm = (wi + wo).normalized();
-        float pdf = microfacet::pdfGGXVNDF(alpha, wm, wo) / (4 * abs(wo.z()));
+        float pdf = microfacet::pdfGGXVNDF(alpha, wm, wo) / (4 * max(abs(wo.dot(wm)), Epsilon));
         return { color * microfacet::evaluateGGX(alpha, wm) *
                  microfacet::smithG1(alpha, wm, wi) *
                  microfacet::smithG1(alpha, wm, wo) /
@@ -62,7 +62,7 @@ struct MetallicLobe {
         Vector wi = reflect(wo, wm);
         if (!Frame::sameHemisphere(wi, wo))
             return BsdfSample::invalid();
-        float pdf = microfacet::pdfGGXVNDF(alpha, wm, wo) / (4 * abs(wo.z()));
+        float pdf = microfacet::pdfGGXVNDF(alpha, wm, wo) / (4 * max(abs(wo.dot(wm)), Epsilon));
         return { wi, color * microfacet::smithG1(alpha, wm, wi), pdf };
         // hints:
         // * copy your roughconductor bsdf sample here

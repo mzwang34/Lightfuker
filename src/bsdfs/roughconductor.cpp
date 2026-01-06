@@ -25,7 +25,7 @@ public:
         if (!Frame::sameHemisphere(wi, wo))
             return BsdfEval::invalid();
         Vector wm = (wi + wo).normalized();
-        float pdf = microfacet::pdfGGXVNDF(alpha, wm, wo) / (4 * abs(wo.z()));
+        float pdf = microfacet::pdfGGXVNDF(alpha, wm, wo) / (4 * max(abs(wo.dot(wm)), Epsilon));
         return { m_reflectance.get()->evaluate(uv) *
                  microfacet::evaluateGGX(alpha, wm) *
                  microfacet::smithG1(alpha, wm, wi) *
@@ -43,7 +43,7 @@ public:
         // NOT_IMPLEMENTED
         Vector wm = microfacet::sampleGGXVNDF(alpha, wo, rng.next2D());
         Vector wi = reflect(wo, wm);
-        float pdf = microfacet::pdfGGXVNDF(alpha, wm, wo) / (4 * abs(wo.z()));
+        float pdf = microfacet::pdfGGXVNDF(alpha, wm, wo) / (4 * max(abs(wo.dot(wm)), Epsilon));
         if (!Frame::sameHemisphere(wi, wo))
             return BsdfSample::invalid();
         return { wi,
