@@ -92,7 +92,7 @@ protected:
             its.shadingNormal = its.geometryNormal;
         }
         its.tangent = Frame(its.shadingNormal).tangent;
-        its.pdf = 0.f; // TODO
+        its.pdf = 2.f / (e1.cross(e2)).length();
         
         return true;
     }
@@ -140,7 +140,36 @@ public:
     AreaSample sampleArea(Sampler &rng) const override{
         // only implement this if you need triangle mesh area light sampling for
         // your rendering competition
-        NOT_IMPLEMENTED
+        float u = rng.next();
+        float v = rng.next();
+
+        float x = sqrt(u) * (1.f - v);
+        float y = sqrt(u) * v;
+
+        AreaSample sample;
+        int primitiveIndex = std::min(int(rng.next() * numberOfPrimitives()), numberOfPrimitives() - 1); // TODO: one triangle only, bad sampling strategy for multiple triangle meshes
+        Vector3i vert_indices = m_triangles[primitiveIndex];
+
+        Vertex v0 = m_vertices[vert_indices[0]];
+        Vertex v1 = m_vertices[vert_indices[1]];
+        Vertex v2 = m_vertices[vert_indices[2]];
+
+        Vector e1 = v1.position - v0.position;
+        Vector e2 = v2.position - v0.position;
+
+        Vertex v_interp = Vertex::interpolate(Vector2(x, y), v0, v1, v2);
+        sample.position = v_interp.position;
+        sample.uv = v_interp.uv;
+        sample.geometryNormal = e1.cross(e2).normalized();
+        if (m_smoothNormals) {
+            sample.shadingNormal = v_interp.normal.normalized();
+        } else {
+            sample.shadingNormal = sample.geometryNormal;
+        }
+        sample.tangent = Frame(sample.shadingNormal).tangent;
+        sample.pdf = 2.f / (e1.cross(e2)).length();
+
+        return sample;
     }
 
     std::string toString() const override {
