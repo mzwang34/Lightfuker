@@ -9,7 +9,7 @@ class pathTracerMISIntegrator : public SamplingIntegrator {
 public:
     pathTracerMISIntegrator(const Properties &properties)
         : SamplingIntegrator(properties) {
-        m_depth = properties.get<int>("depth", 2);
+        m_depth    = properties.get<int>("depth", 2);
         m_strategy = properties.get<std::string>("strategy", "mis");
     }
 
@@ -28,53 +28,67 @@ public:
                         if (path_len == 0) {
                             c += throughput * its.evaluateEmission().value;
                         } else {
-                            float pdf_light = its.evaluateEmission().pdf * its.lightProbability;
+                            float pdf_light = its.evaluateEmission().pdf *
+                                              its.lightProbability;
                             float mis_bsdf = pre_bsdf / (pre_bsdf + pdf_light);
-                            c += throughput * its.evaluateEmission().value * mis_bsdf;
+                            c += throughput * its.evaluateEmission().value *
+                                 mis_bsdf;
                         }
                     }
                     break;
                 }
-            
+
                 // hit light source
                 if (its.evaluateEmission()) {
                     if (path_len == 0) {
                         c += its.evaluateEmission().value * throughput;
                     } else {
-                        float cosTheta = std::abs(its.shadingNormal.dot(-_ray.direction));
-                        float pdf_light = its.pdf * its.lightProbability * its.t * its.t / std::max(cosTheta, Epsilon);
+                        float cosTheta =
+                            std::abs(its.shadingNormal.dot(-_ray.direction));
+                        float pdf_light = its.pdf * its.lightProbability *
+                                          its.t * its.t /
+                                          std::max(cosTheta, Epsilon);
                         float mis_bsdf = pre_bsdf / (pre_bsdf + pdf_light);
-                        c += mis_bsdf * throughput * its.evaluateEmission().value;
+                        c += mis_bsdf * throughput *
+                             its.evaluateEmission().value;
                     }
                 }
 
                 if (path_len == m_depth - 1)
                     break;
 
-                if (m_scene-> hasLights()) {
-                    LightSample lightSample = m_scene->sampleLight(rng);             
+                if (m_scene->hasLights()) {
+                    LightSample lightSample = m_scene->sampleLight(rng);
                     if (lightSample) {
                         const Light *light = lightSample.light;
-                        DirectLightSample dSample = light->sampleDirect(its.position, rng);
+                        DirectLightSample dSample =
+                            light->sampleDirect(its.position, rng);
                         if (!dSample.isInvalid()) {
                             Ray shadowRay{ its.position, dSample.wi };
 
-                            float pdf_light = dSample.pdf * lightSample.probability;
+                            float pdf_light =
+                                dSample.pdf * lightSample.probability;
                             float pdf_bsdf = its.evaluateBsdf(dSample.wi).pdf;
-                            float light_mis = light->canBeIntersected() ? pdf_light / (pdf_light + pdf_bsdf) : 1.f;
+                            float light_mis =
+                                light->canBeIntersected()
+                                    ? pdf_light / (pdf_light + pdf_bsdf)
+                                    : 1.f;
 
                             float trans = m_scene->transmittance(
                                 shadowRay, dSample.distance, rng);
                             if (trans > 0.f)
-                                c += light_mis * trans * throughput * its.evaluateBsdf(dSample.wi).value * dSample.weight / lightSample.probability;
+                                c += light_mis * trans * throughput *
+                                     its.evaluateBsdf(dSample.wi).value *
+                                     dSample.weight / pdf_light;
                         }
                     }
                 }
 
                 BsdfSample bsdfSample = its.sampleBsdf(rng);
-                if (bsdfSample.isInvalid()) break;
+                if (bsdfSample.isInvalid())
+                    break;
                 throughput *= bsdfSample.weight;
-                _ray = Ray(its.position, bsdfSample.wi);
+                _ray     = Ray(its.position, bsdfSample.wi);
                 pre_bsdf = bsdfSample.pdf;
             }
             return c;
@@ -103,22 +117,28 @@ public:
                     break;
 
                 if (m_scene->hasLights()) {
-                    LightSample lightSample = m_scene->sampleLight(rng);             
+                    LightSample lightSample = m_scene->sampleLight(rng);
                     if (lightSample) {
                         const Light *light = lightSample.light;
-                        DirectLightSample dSample = light->sampleDirect(its.position, rng);
+                        DirectLightSample dSample =
+                            light->sampleDirect(its.position, rng);
                         if (!dSample.isInvalid()) {
                             Ray shadowRay{ its.position, dSample.wi };
+                            float pdf_light =
+                                dSample.pdf * lightSample.probability;
                             float trans = m_scene->transmittance(
                                 shadowRay, dSample.distance, rng);
                             if (trans > 0.f)
-                                c += trans * throughput * its.evaluateBsdf(dSample.wi).value * dSample.weight / lightSample.probability;
+                                c += trans * throughput *
+                                     its.evaluateBsdf(dSample.wi).value *
+                                     dSample.weight / pdf_light;
                         }
                     }
                 }
 
                 BsdfSample bsdfSample = its.sampleBsdf(rng);
-                if (bsdfSample.isInvalid()) break;
+                if (bsdfSample.isInvalid())
+                    break;
                 throughput *= bsdfSample.weight;
                 _ray = Ray(its.position, bsdfSample.wi);
             }
@@ -143,7 +163,8 @@ public:
                     break;
 
                 BsdfSample bsdfSample = its.sampleBsdf(rng);
-                if (bsdfSample.isInvalid()) break;
+                if (bsdfSample.isInvalid())
+                    break;
                 throughput *= bsdfSample.weight;
                 _ray = Ray(its.position, bsdfSample.wi);
             }
@@ -154,11 +175,13 @@ public:
     /// @brief An optional textual representation of this class, which can be
     /// useful for debugging.
     std::string toString() const override {
-        return tfm::format("pathTracerMISIntegrator[\n"
-                           "  sampler = %s,\n"
-                           "  image = %s,\n"
-                           "]",
-                           indent(m_sampler), indent(m_image));
+        return tfm::format(
+            "pathTracerMISIntegrator[\n"
+            "  sampler = %s,\n"
+            "  image = %s,\n"
+            "]",
+            indent(m_sampler),
+            indent(m_image));
     }
 };
 
