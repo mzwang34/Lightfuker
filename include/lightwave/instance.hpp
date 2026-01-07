@@ -115,8 +115,6 @@ public:
     bool hasAlpha(Intersection &its, Sampler &rng) const;
     AreaSample sampleArea(const Point &origin, Sampler &rng) const override;
 
-    bool hasAlpha(Intersection &its, Sampler &rng) const;
-
     /// @brief Returns a textual representation of this image.
     std::string toString() const override {
         return tfm::format(
