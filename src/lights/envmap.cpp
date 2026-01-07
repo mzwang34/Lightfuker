@@ -30,7 +30,7 @@ public:
         float u     = phi * Inv2Pi + 0.5;
         float v     = theta * InvPi;
         return {
-            .value = m_texture->evaluate(Point2(u, v)),
+            .value = m_texture->evaluate(Point2(u, v)), .pdf = Inv4Pi, 
         };
     }
 
@@ -48,6 +48,7 @@ public:
             .wi       = direction,
             .weight   = E.value * FourPi,
             .distance = Infinity,
+            .pdf = Inv4Pi,
         };
     }
 

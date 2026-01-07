@@ -15,7 +15,7 @@ public:
         if (!Frame::sameHemisphere(wi, wo))
             return BsdfEval::invalid();
         return BsdfEval{ m_albedo.get()->evaluate(uv) * InvPi *
-                         Frame::cosTheta(wi) };
+                         Frame::cosTheta(wi), abs(wi.z()) * InvPi };
     }
 
     BsdfSample sample(const Point2 &uv, const Vector &wo,
@@ -32,8 +32,7 @@ public:
         Color weight = m_albedo.get()->evaluate(uv);
         if (!Frame::sameHemisphere(wi, wo))
             return BsdfSample::invalid();
-
-        return BsdfSample{ wi, weight };
+        return BsdfSample{ wi, weight, abs(wi.z()) * InvPi };
     }
 
     std::string toString() const override {

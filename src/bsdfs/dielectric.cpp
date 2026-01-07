@@ -32,22 +32,32 @@ public:
             ior        = 1.f / ior;
             cosTheta_o = -cosTheta_o;
         }
-        float R = fresnelDielectric(cosTheta_o, ior);
-        auto c_reflect = R * m_reflectance->evaluate(uv);
+        float R         = fresnelDielectric(cosTheta_o, ior);
+        auto c_reflect  = R * m_reflectance->evaluate(uv);
         auto c_transmit = (1 - R) * m_transmittance->evaluate(uv);
         float p_reflect =
             c_reflect.mean() > 0
                 ? c_reflect.mean() / (c_reflect.mean() + c_transmit.mean())
                 : 0;
         if (rng.next() < p_reflect) {
-            return BsdfSample{ Vector(-wo.x(), -wo.y(), wo.z()),
-                               c_reflect / p_reflect };
+            // return BsdfSample{ Vector(-wo.x(), -wo.y(), wo.z()),
+            //                    c_reflect / p_reflect, p_reflect };
+            return BsdfSample{
+                Vector(-wo.x(), -wo.y(), wo.z()), c_reflect / p_reflect, 1.f
+            }; // The PDF for specular material will not been touched anyway
+            // Set PDF = 1.f rather 0.f to avoid numerical error
         } else {
             Vector wi = refract(wo, Vector(0.f, 0.f, 1.f), ior);
             if (wi.isZero())
                 return BsdfSample::invalid();
+            // return BsdfSample{
+            //     wi, c_transmit / (ior * ior * (1 - p_reflect)), 1 - p_reflect
+            // };
             return BsdfSample{
-                wi, c_transmit / (ior * ior * (1 - p_reflect))
+                wi,
+                c_transmit / (ior * ior * (1 - p_reflect)),
+                1.f // The PDF for specular material will not been touched
+                    // anyway
             };
         }
     }

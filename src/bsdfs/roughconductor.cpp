@@ -25,11 +25,14 @@ public:
         if (!Frame::sameHemisphere(wi, wo))
             return BsdfEval::invalid();
         Vector wm = (wi + wo).normalized();
+        float pdf =
+            microfacet::pdfGGXVNDF(alpha, wm, wo) / (4 * abs(wo.dot(wm)));
         return { m_reflectance.get()->evaluate(uv) *
-                 microfacet::evaluateGGX(alpha, wm) *
-                 microfacet::smithG1(alpha, wm, wi) *
-                 microfacet::smithG1(alpha, wm, wo) /
-                 (4 * abs(Frame::cosTheta(wo))) };
+                     microfacet::evaluateGGX(alpha, wm) *
+                     microfacet::smithG1(alpha, wm, wi) *
+                     microfacet::smithG1(alpha, wm, wo) /
+                     (4 * abs(Frame::cosTheta(wo))),
+                 pdf };
 
         // hints:
         // * the microfacet normal can be computed from `wi' and `wo'
@@ -42,11 +45,14 @@ public:
         // NOT_IMPLEMENTED
         Vector wm = microfacet::sampleGGXVNDF(alpha, wo, rng.next2D());
         Vector wi = reflect(wo, wm);
+        float pdf =
+            microfacet::pdfGGXVNDF(alpha, wm, wo) / (4 * abs(wo.dot(wm)));
         if (!Frame::sameHemisphere(wi, wo))
             return BsdfSample::invalid();
         return { wi,
                  m_reflectance.get()->evaluate(uv) *
-                     microfacet::smithG1(alpha, wm, wi) };
+                     microfacet::smithG1(alpha, wm, wi),
+                 pdf };
 
         // hints:
         // * do not forget to cancel out as many terms from your equations as

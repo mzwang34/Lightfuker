@@ -44,7 +44,7 @@ class Instance : public Shape {
     bool m_visible;
 
     ref<Texture> m_alpha;
- 
+
     /// @brief Transforms the frame from object coordinates to world
     /// coordinates.
     inline void transformFrame(SurfaceEvent &surf, const Vector &wo) const;
@@ -55,7 +55,7 @@ public:
         m_bsdf      = properties.getOptionalChild<Bsdf>();
         m_emission  = properties.getOptionalChild<Emission>();
         m_transform = properties.getOptionalChild<Transform>();
-        m_visible = false;
+        m_visible   = false;
         m_alpha     = properties.get<Texture>("alpha", nullptr);
     }
 
@@ -126,8 +126,7 @@ public:
             indent(m_shape),
             indent(m_bsdf),
             indent(m_emission),
-            indent(m_transform)
-        );
+            indent(m_transform));
     }
 };
 
