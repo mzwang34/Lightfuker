@@ -51,7 +51,7 @@ public:
                 if (path_len == m_depth - 1)
                     break;
 
-                if (m_scene-> hasLights()) {
+                if (m_scene->hasLights()) {
                     LightSample lightSample = m_scene->sampleLight(rng);             
                     if (lightSample) {
                         const Light *light = lightSample.light;
