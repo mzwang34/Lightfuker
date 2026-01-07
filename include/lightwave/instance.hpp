@@ -42,8 +42,8 @@ class Instance : public Shape {
     /// @brief Tracks whether this instance has been added to the scene, i.e.,
     /// could be hit by ray tracing.
     bool m_visible;
-
     ref<Texture> m_alpha;
+    ref<Texture> m_normal;
 
     /// @brief Transforms the frame from object coordinates to world
     /// coordinates.
@@ -57,6 +57,7 @@ public:
         m_transform = properties.getOptionalChild<Transform>();
         m_visible   = false;
         m_alpha     = properties.get<Texture>("alpha", nullptr);
+        m_normal    = properties.get<Texture>("normal", nullptr);
     }
 
     /// @brief Returns the shape.
