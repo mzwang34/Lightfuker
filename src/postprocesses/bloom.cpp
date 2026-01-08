@@ -71,7 +71,7 @@ public:
         for (int x = 0; x < res.x(); x++) {
             for (int y = 0; y < res.y(); y++) {
                 Point2i p{ x, y };
-                (*m_output)(p) += blury(p) * m_intensity;
+                (*m_output)(p) = (*m_input)(p) + blury(p) * m_intensity;
             }
         }
 
