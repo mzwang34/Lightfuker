@@ -172,9 +172,11 @@ public:
             if (mapPdf == 0) return DirectLightSample::invalid();
 
             float theta = uv.y() * Pi;
-            float phi = (1.f - 2.f * uv.x()) * Pi;
+            // float phi = (1.f - 2.f * uv.x()) * Pi;
+            float phi = 2.0f * Pi * (uv.x() - 0.5f);
             float sinTheta = std::sin(theta);
-            Vector wi = Vector(cos(phi) * sinTheta, cos(theta), sin(phi) * sinTheta);
+            // Vector wi = Vector(cos(phi) * sinTheta, cos(theta), sin(phi) * sinTheta);
+            Vector wi = Vector(cos(phi) * sinTheta, cos(theta), -sin(phi) * sinTheta);
             if (m_transform) wi = m_transform->apply(wi).normalized();
 
             float pdf = mapPdf / (2 * Pi * Pi * sinTheta);
