@@ -1,0 +1,31 @@
+<integrator type="pathtracer_mis" depth="5">
+    <image id="grid" />
+    <scene id="scene">
+    <camera type="perspective" id="camera">
+        <integer name="width" value="400"/>
+        <integer name="height" value="400"/>
+        <string name="fovAxis" value="x"/>
+        <float name="fov" value="40"/>
+        <transform>
+            <rotate axis="1,0,0" angle="-2.5"/>
+                <translate z="-5"/>
+        </transform>
+    </camera>
+
+    <light type="directional" direction="-0.7,-1.2,0" intensity="12,9,3"/>
+
+    <instance>
+        <shape type="grid" filename="cloud.vol" multiplier="40"></shape>
+        <bsdf type="hg">
+            <float name="g" value="0"/>
+            <color name="albedo" value="0.8"/>
+        </bsdf>
+        <transform>
+            <scale value="5"/>
+                <translate y="0" z="-3" x="-2.5"/>
+            <rotate axis="1,0,0" angle="90"/>
+        </transform>
+    </instance>
+    </scene>
+    <sampler type="independent" count="64"/>
+</integrator>
