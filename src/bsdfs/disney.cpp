@@ -389,27 +389,31 @@ public:
         BsdfSample s;
         if (Frame::cosTheta(wo) < 0) {
             s = comb.glass.sample(wo, rng);
-            return { s.wi, s.weight, pGlass * s.pdf };
+            // return { s.wi, s.weight, pGlass * s.pdf };
+            return { s.wi, s.weight, s.pdf };
         }
 
         if (p < pDiffuse) {
             s = comb.diffuse.sample(wo, rng);
-            s.weight /= pDiffuse;
-            return { s.wi, s.weight, pDiffuse * s.pdf };
+            // s.weight /= pDiffuse;
+            // return { s.wi, s.weight, pDiffuse * s.pdf };
         } else if (p < (pDiffuse + pMetal)) {
             s = comb.metal.sample(wo, rng);
-            s.weight /= pMetal;
-            return { s.wi, s.weight, pMetal * s.pdf };
+            // s.weight /= pMetal;
+            // return { s.wi, s.weight, pMetal * s.pdf };
         } else if (p < (pDiffuse + pMetal + pGlass)) {
             s = comb.glass.sample(wo, rng);
-            s.weight /= pGlass;
-            return { s.wi, s.weight, pGlass * s.pdf };
+            // s.weight /= pGlass;
+            // return { s.wi, s.weight, pGlass * s.pdf };
         } else {
             s = comb.clearcoat.sample(wo, rng);
-            s.weight /= pClearcoat;
-            return { s.wi, s.weight, pClearcoat * s.pdf };
+            // s.weight /= pClearcoat;
+            // return { s.wi, s.weight, pClearcoat * s.pdf };
         }
-        return s;
+        // return s;
+        auto e = evaluate(uv, wo, s.wi);
+        auto weight = e.pdf > Epsilon ? e.value / e.pdf : Color(0.f);
+        return {s.wi, weight, e.pdf}; 
     }
 
     std::string toString() const override {
