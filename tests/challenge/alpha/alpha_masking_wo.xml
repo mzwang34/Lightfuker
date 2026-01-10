@@ -1,5 +1,5 @@
 <integrator type="direct">
-    <image id="alpha_masking"/>
+    <image id="alpha_masking_wo"/>
     <scene id="scene">
             <camera type="perspective" id="camera">
                 <integer name="width" value="400"/>
@@ -23,7 +23,7 @@
                 <bsdf type="diffuse">
                     <texture name="albedo" type="image" filename="../textures/grass.jpg"/>
                 </bsdf>
-                <texture name="alpha" type="image" filename="../textures/grass_alpha.png"/>
+                <!-- <texture name="alpha" type="image" filename="../textures/grass_alpha.png"/> -->
                 <transform>
                     <scale value="0.5"/>
                     <translate y="0.5" z="-0.1"/>

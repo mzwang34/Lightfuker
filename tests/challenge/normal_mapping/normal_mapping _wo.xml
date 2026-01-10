@@ -1,5 +1,5 @@
 <integrator type="direct">
-    <image id="normal_mapping" />
+    <image id="normal_mapping_wo" />
     <scene id="scene">
         <camera type="perspective" id="camera">
             <integer name="width" value="512"/>
@@ -18,7 +18,7 @@
             <bsdf type="diffuse">
                 <texture name="albedo" type="constant" value="0.5" />
             </bsdf>
-            <texture name="normal" type="image" filename="../textures/normal_map.png"/>
+            <!-- <texture name="normal" type="image" filename="../textures/normal_map.png"/> -->
             <transform>
                 <rotate axis="1,0,0" angle="140"/>
                 <scale value="2"/>

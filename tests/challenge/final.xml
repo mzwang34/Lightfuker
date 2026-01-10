@@ -1,0 +1,1044 @@
+<scene id="scene">
+  <camera type="thinlens">
+    <integer name="width" value="1620"/>
+    <integer name="height" value="2400"/>
+    <float name="fov" value="39.598"/>
+    <string name="fovAxis" value="y"/>
+    <float name="lensRadius" value="0.05"/>
+    <float name="focalDistance" value="6.0"/> 
+    <transform>
+      <matrix value="-0.91263,-0.0021885,0.40877,-2.3932,  -0.40878,0.0048874,-0.91262,5.9052,  -5.5234e-07,-0.99999,-0.0053551,1.568,  0,0,0,1"/>
+    </transform>
+  </camera>
+  <instance>
+    <bsdf id="green_rough_planks" type="principled">
+      <texture name="baseColor" type="image" filename="textures/green_rough_planks_diff_1k.jpg"/>
+      <texture name="roughness" type="image" filename="textures/green_rough_planks_rough_1k.jpg" linear="true"/>
+      <texture name="metallic" type="constant" value="0"/>
+      <texture name="specular" type="constant" value="0"/>
+    </bsdf>
+    <texture name="normal" id="green_rough_planks.000" type="image" filename="textures/green_rough_planks_nor_gl_1k.jpg" linear="true"/>
+    <shape type="mesh" filename="meshes/Mesh.004.ply"/>
+    <transform>
+      <matrix value="0.01,-2.0916e-17,5.5511e-17,-0.18452,  5.5511e-17,1.1925e-10,-0.01,0.044243,  -1.0491e-17,0.01,1.1925e-10,0.87936,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <ref id="green_rough_planks"/>
+    <ref name="normal" id="green_rough_planks.000"/>
+    <shape type="mesh" filename="meshes/Mesh.010.ply"/>
+    <transform>
+      <matrix value="0.01,-2.0916e-17,5.5511e-17,-0.18452,  5.5511e-17,1.1925e-10,-0.01,0.044243,  -1.0491e-17,0.01,1.1925e-10,2.5804,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <bsdf id="plywood" type="principled">
+      <texture name="baseColor" type="image" filename="textures/plywood_diff_1k.jpg"/>
+      <texture name="roughness" type="image" filename="textures/plywood_rough_1k.jpg" linear="true"/>
+      <texture name="metallic" type="constant" value="0"/>
+      <texture name="specular" type="constant" value="0"/>
+    </bsdf>
+    <texture name="normal" id="plywood.000" type="image" filename="textures/plywood_nor_gl_1k.jpg" linear="true"/>
+    <shape type="mesh" filename="meshes/Plane.001.ply"/>
+    <transform>
+      <matrix value="1.3353,0,0,0,  0,1,0,-0.95756,  0,0,1,0,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <ref id="plywood"/>
+    <ref name="normal" id="plywood.000"/>
+    <shape type="mesh" filename="meshes/Plane.002.ply"/>
+    <transform>
+      <matrix value="1.3353,0,0,0,  0,1,0,-0.95756,  0,0,1,1.7843,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <bsdf type="principled">
+      <texture name="baseColor" type="constant" value="0.069357,0.069357,0.069357"/>
+      <texture name="roughness" type="constant" value="0.038191"/>
+      <texture name="metallic" type="constant" value="0.87117"/>
+      <texture name="specular" type="constant" value="0"/>
+    </bsdf>
+    <shape type="mesh" filename="meshes/Material2.005.ply"/>
+    <transform>
+      <matrix value="1,0,0,0,  0,1,0,0,  0,0,1,0,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <bsdf id="Books_Material" type="principled">
+      <texture name="baseColor" type="image" filename="textures/Books_Material_baseColor.png"/>
+      <texture name="roughness" type="image" filename="textures/Books_Material_Roughness.png"/>
+      <texture name="metallic" type="image" filename="textures/Books_Material_Metallic.png"/>
+      <texture name="specular" type="constant" value="0"/>
+    </bsdf>
+    <texture name="normal" id="Books_Material.000" type="image" filename="textures/Books_Material_normal.png" linear="true"/>
+    <texture name="alpha" id="Books_Material.001" type="image" filename="textures/Books_Material_alpha.png"/>
+    <shape type="mesh" filename="meshes/Key_stick_Books_Material_0.ply"/>
+    <transform>
+      <matrix value="-0.025649,-0.13892,-0.00059265,0.28911,  0.13859,-0.02563,0.0096494,-1.6998,  -0.0095964,0.0011706,0.14094,0.26875,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <ref id="Books_Material"/>
+    <ref name="normal" id="Books_Material.000"/>
+    <ref name="alpha" id="Books_Material.001"/>
+    <shape type="mesh" filename="meshes/pCube3_Books_Material_0.ply"/>
+    <transform>
+      <matrix value="-0.025649,-0.13892,-0.00059265,0.24041,  0.13859,-0.02563,0.0096494,-1.6363,  -0.0095964,0.0011706,0.14094,0.29434,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <ref id="Books_Material"/>
+    <ref name="normal" id="Books_Material.000"/>
+    <ref name="alpha" id="Books_Material.001"/>
+    <shape type="mesh" filename="meshes/pCube4_Books_Material_0.ply"/>
+    <transform>
+      <matrix value="-0.025649,-0.13892,-0.00059265,0.24041,  0.13859,-0.02563,0.0096494,-1.6363,  -0.0095964,0.0011706,0.14094,0.29434,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <ref id="plywood"/>
+    <ref name="normal" id="plywood.000"/>
+    <shape type="mesh" filename="meshes/Plane.004.ply"/>
+    <transform>
+      <matrix value="1.0226,0,0,-0.3049,  0,0.038168,0,-0.60357,  0,0,0.26848,2.8651,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <bsdf type="principled">
+      <texture name="baseColor" type="image" filename="textures/fihser_baseColor.jpeg"/>
+      <texture name="roughness" type="constant" value="0.8"/>
+      <texture name="metallic" type="constant" value="0"/>
+      <texture name="specular" type="constant" value="0"/>
+    </bsdf>
+    <shape type="mesh" filename="meshes/Object_0.ply"/>
+    <transform>
+      <matrix value="-0.073911,-0.0035716,-0.0035716,0.60206,  0.0035716,-0.073997,8.6204e-05,-0.60281,  -0.0035716,-8.6185e-05,0.073997,2.983,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <ref id="plywood"/>
+    <ref name="normal" id="plywood.000"/>
+    <shape type="mesh" filename="meshes/Plane.005.ply"/>
+    <transform>
+      <matrix value="1.3353,0,0,-0.48078,  0,-0.29351,0,-1.4747,  0,0,-0.11053,2.547,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <bsdf type="principled">
+      <texture name="baseColor" type="image" filename="textures/sign.jpg"/>
+      <texture name="roughness" type="image" filename="textures/sign_Roughness.png"/>
+      <texture name="metallic" type="image" filename="textures/sign_Metallic.png"/>
+      <texture name="specular" type="constant" value="0"/>
+    </bsdf>
+    <texture name="normal" type="image" filename="textures/sign_normal.png" linear="true"/>
+    <shape type="mesh" filename="meshes/defaultMaterial.001.ply"/>
+    <transform>
+      <matrix value="1.453,0,0,0,  0,0.71429,6.2722e-15,0.35909,  0,-7.1054e-15,0.63053,2.9967,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <bsdf type="principled">
+      <texture name="baseColor" type="image" filename="textures/chasovaya_baseColor.png"/>
+      <texture name="roughness" type="image" filename="textures/chasovaya_Roughness.png"/>
+      <texture name="metallic" type="image" filename="textures/chasovaya_Metallic.png"/>
+      <texture name="specular" type="constant" value="0"/>
+    </bsdf>
+    <shape type="mesh" filename="meshes/BUDILNIK_chasovaya_0.ply"/>
+    <transform>
+      <matrix value="-0.16647,0.059894,0.0072637,0.46121,  -0.060333,-0.16525,-0.020083,-0.45113,  -1.4138e-05,-0.021356,0.17577,1.0279,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <bsdf type="principled">
+      <texture name="baseColor" type="image" filename="textures/ciferblat_baseColor.png"/>
+      <texture name="roughness" type="image" filename="textures/ciferblat_Roughness.png"/>
+      <texture name="metallic" type="image" filename="textures/ciferblat_Metallic.png"/>
+      <texture name="specular" type="constant" value="0"/>
+    </bsdf>
+    <shape type="mesh" filename="meshes/BUDILNIK_ciferblat_0.ply"/>
+    <transform>
+      <matrix value="-0.16647,0.059894,0.0072637,0.46121,  -0.060333,-0.16525,-0.020083,-0.45113,  -1.4138e-05,-0.021356,0.17577,1.0279,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <bsdf type="principled">
+      <texture name="baseColor" type="image" filename="textures/hrom_baseColor.png"/>
+      <texture name="roughness" type="image" filename="textures/hrom_Roughness.png"/>
+      <texture name="metallic" type="image" filename="textures/hrom_Metallic.png"/>
+      <texture name="specular" type="constant" value="0"/>
+    </bsdf>
+    <shape type="mesh" filename="meshes/BUDILNIK_hrom_0.ply"/>
+    <transform>
+      <matrix value="-0.16647,0.059894,0.0072637,0.46121,  -0.060333,-0.16525,-0.020083,-0.45113,  -1.4138e-05,-0.021356,0.17577,1.0279,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <bsdf type="principled">
+      <texture name="baseColor" type="image" filename="textures/korpus_baseColor.png"/>
+      <texture name="roughness" type="image" filename="textures/korpus_Roughness.png"/>
+      <texture name="metallic" type="image" filename="textures/korpus_Metallic.png"/>
+      <texture name="specular" type="constant" value="0"/>
+    </bsdf>
+    <shape type="mesh" filename="meshes/BUDILNIK_korpus_0.ply"/>
+    <transform>
+      <matrix value="-0.16647,0.059894,0.0072637,0.46121,  -0.060333,-0.16525,-0.020083,-0.45113,  -1.4138e-05,-0.021356,0.17577,1.0279,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <bsdf type="principled">
+      <texture name="baseColor" type="image" filename="textures/blank-black-wooden-textured-mobile-wallpaper-background.jpg"/>
+      <texture name="roughness" type="constant" value="1"/>
+      <texture name="metallic" type="constant" value="0"/>
+      <texture name="specular" type="constant" value="0"/>
+    </bsdf>
+    <shape type="mesh" filename="meshes/BUDILNIK_Material_0.ply"/>
+    <transform>
+      <matrix value="-0.16647,0.059894,0.0072637,0.46121,  -0.060333,-0.16525,-0.020083,-0.45113,  -1.4138e-05,-0.021356,0.17577,1.0279,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <bsdf type="principled">
+      <texture name="baseColor" type="image" filename="textures/minutnaya_baseColor.png"/>
+      <texture name="roughness" type="image" filename="textures/minutnaya_Roughness.png"/>
+      <texture name="metallic" type="constant" value="0"/>
+      <texture name="specular" type="constant" value="0"/>
+    </bsdf>
+    <shape type="mesh" filename="meshes/BUDILNIK_minutnaya_0.ply"/>
+    <transform>
+      <matrix value="-0.16647,0.059894,0.0072637,0.46121,  -0.060333,-0.16525,-0.020083,-0.45113,  -1.4138e-05,-0.021356,0.17577,1.0279,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <bsdf type="principled">
+      <texture name="baseColor" type="image" filename="textures/wood_floor_worn_diff_1k.jpg"/>
+      <texture name="roughness" type="constant" value="1"/>
+      <texture name="metallic" type="constant" value="0"/>
+      <texture name="specular" type="constant" value="0"/>
+    </bsdf>
+    <texture name="normal" type="constant" value="0.5,0.5,1"/>
+    <shape type="mesh" filename="meshes/Icosphere.001.ply"/>
+    <transform>
+      <matrix value="0.016336,0,0,-1.2736,  0,0.026017,0,-0.6052,  0,0,0.026017,2.9291,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <bsdf type="principled">
+      <texture name="baseColor" type="image" filename="textures/Candles_Fire_MAT_baseColor.png"/>
+      <texture name="roughness" type="constant" value="0.82111"/>
+      <texture name="metallic" type="constant" value="0"/>
+      <texture name="specular" type="constant" value="0"/>
+    </bsdf>
+    <texture name="alpha" type="image" filename="textures/Candles_Fire_MAT_alpha.png"/>
+    <shape type="mesh" filename="meshes/CandleSet01_Stick02_Flame_geo_Candles_Fire_MAT_0.ply"/>
+    <transform>
+      <matrix value="-0.030696,9.9762e-09,-0.032931,-0.22926,  0.032931,9.2991e-09,-0.030696,-0.39098,  0,-0.045018,-1.3638e-08,2.5578,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <light type="area">
+    <instance>
+      <shape type="sphere"/>
+      <transform>
+        <scale value="1.5"/>
+        <translate x="-0.98901" y="-2.709" z="0.68317"/>
+      </transform>
+      <emission type="lambertian">
+        <texture name="emission" type="constant" value="0.65617,0.10889,0.022714"/>
+      </emission>
+    </instance>
+  </light>
+  <instance>
+    <bsdf type="hg">
+          <float name="g" value="0.1"/>
+          <color name="albedo" value="0.5, 0.4, 0.3"/>
+      </bsdf>
+    <shape type="volume" density="0.1">   
+      <shape type="mesh" filename="meshes/Cone.ply"/>
+    </shape>
+    <transform>
+      <matrix value="-0.24873,0.31043,0.72769,-0.052201,  -0.12488,-0.40392,0.63328,-0.95991,  0.48262,0.055476,0.5389,2.473,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <bsdf type="hg">
+          <float name="g" value="0.1"/>
+          <color name="albedo" value="0.5, 0.4, 0.3"/>
+    </bsdf>
+    <shape type="volume" density="0.1"> 
+      <shape type="mesh" filename="meshes/Cone.001.ply"/>
+    </shape>
+    <transform>
+      <matrix value="-0.38104,0.13942,0.74797,-0.043776,  0.042188,-0.45934,0.48265,-0.71231,  0.40424,0.17936,0.65466,0.74229,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <light type="directional" direction="0.42153,0.86566,0.27008" intensity="2,1.5826,0.82757"/>
+  <instance>
+    <bsdf id="BicchiereMAt" type="principled">
+      <texture name="baseColor" type="image" filename="textures/BicchiereMAt_baseColor.png"/>
+      <texture name="roughness" type="image" filename="textures/BicchiereMAt_Roughness.png"/>
+      <texture name="metallic" type="image" filename="textures/BicchiereMAt_Metallic.png"/>
+      <texture name="specular" type="constant" value="0"/>
+    </bsdf>
+    <texture name="normal" id="BicchiereMAt.000" type="image" filename="textures/BicchiereMAt_normal.png" linear="true"/>
+    <shape type="mesh" filename="meshes/Asta_LP_BicchiereMAt_0.ply"/>
+    <transform>
+      <matrix value="0.0234,0,0,-0.69102,  0,-3.144e-09,0.0234,-0.27302,  0,-0.0234,-3.144e-09,1.9399,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <ref id="BicchiereMAt"/>
+    <ref name="normal" id="BicchiereMAt.000"/>
+    <shape type="mesh" filename="meshes/Base_LP_BicchiereMAt_0.ply"/>
+    <transform>
+      <matrix value="0.0234,0,0,-0.69102,  0,-3.144e-09,0.0234,-0.27302,  0,-0.0234,-3.144e-09,1.9399,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <ref id="BicchiereMAt"/>
+    <ref name="normal" id="BicchiereMAt.000"/>
+    <shape type="mesh" filename="meshes/Corpo_LP_BicchiereMAt_0.ply"/>
+    <transform>
+      <matrix value="0.0234,0,0,-0.69102,  0,-3.144e-09,0.0234,-0.27302,  0,-0.0234,-3.144e-09,1.9399,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <bsdf type="principled">
+      <texture name="baseColor" type="image" filename="textures/Kielich_baseColor.png"/>
+      <texture name="roughness" type="image" filename="textures/Kielich_Roughness.png"/>
+      <texture name="metallic" type="image" filename="textures/Kielich_Metallic.png"/>
+      <texture name="specular" type="constant" value="0"/>
+    </bsdf>
+    <texture name="normal" type="image" filename="textures/Kielich_normal.png" linear="true"/>
+    <shape type="mesh" filename="meshes/Cube_Kielich_0.ply"/>
+    <transform>
+      <matrix value="0.093049,0,0,-0.13459,  0,-2.8189e-08,0.093049,-1.593,  0,-0.093049,-2.8189e-08,2.2172,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <bsdf id="material_0_003" type="principled">
+      <texture name="baseColor" type="image" filename="textures/material_0_baseColor.jpeg"/>
+      <texture name="roughness" type="constant" value="0.6"/>
+      <texture name="metallic" type="constant" value="0"/>
+      <texture name="specular" type="constant" value="0"/>
+    </bsdf>
+    <shape type="mesh" filename="meshes/Object_0.004.ply"/>
+    <transform>
+      <matrix value="0.0038388,0,0,-0.27548,  0,-5.1578e-10,0.0038388,-1.414,  0,-0.0038388,-5.1578e-10,3.3218,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <ref id="material_0_003"/>
+    <shape type="mesh" filename="meshes/Object_1.ply"/>
+    <transform>
+      <matrix value="0.0038388,0,0,-0.27548,  0,-5.1578e-10,0.0038388,-1.414,  0,-0.0038388,-5.1578e-10,3.3218,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <ref id="material_0_003"/>
+    <shape type="mesh" filename="meshes/Object_2.ply"/>
+    <transform>
+      <matrix value="0.0038388,0,0,-0.27548,  0,-5.1578e-10,0.0038388,-1.414,  0,-0.0038388,-5.1578e-10,3.3218,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <ref id="material_0_003"/>
+    <shape type="mesh" filename="meshes/Object_3.002.ply"/>
+    <transform>
+      <matrix value="0.0038388,0,0,-0.27548,  0,-5.1578e-10,0.0038388,-1.414,  0,-0.0038388,-5.1578e-10,3.3218,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <ref id="material_0_003"/>
+    <shape type="mesh" filename="meshes/Object_4.ply"/>
+    <transform>
+      <matrix value="0.0038388,0,0,-0.27548,  0,-5.1578e-10,0.0038388,-1.414,  0,-0.0038388,-5.1578e-10,3.3218,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <ref id="material_0_003"/>
+    <shape type="mesh" filename="meshes/Object_5.ply"/>
+    <transform>
+      <matrix value="0.0038388,0,0,-0.27548,  0,-5.1578e-10,0.0038388,-1.414,  0,-0.0038388,-5.1578e-10,3.3218,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <ref id="material_0_003"/>
+    <shape type="mesh" filename="meshes/Object_6.ply"/>
+    <transform>
+      <matrix value="0.0038388,0,0,-0.27548,  0,-5.1578e-10,0.0038388,-1.414,  0,-0.0038388,-5.1578e-10,3.3218,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <ref id="material_0_003"/>
+    <shape type="mesh" filename="meshes/Object_7.ply"/>
+    <transform>
+      <matrix value="0.0038388,0,0,-0.27548,  0,-5.1578e-10,0.0038388,-1.414,  0,-0.0038388,-5.1578e-10,3.3218,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <ref id="material_0_003"/>
+    <shape type="mesh" filename="meshes/Object_8.ply"/>
+    <transform>
+      <matrix value="0.0038388,0,0,-0.27548,  0,-5.1578e-10,0.0038388,-1.414,  0,-0.0038388,-5.1578e-10,3.3218,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <ref id="material_0_003"/>
+    <shape type="mesh" filename="meshes/Object_9.ply"/>
+    <transform>
+      <matrix value="0.0038388,0,0,-0.27548,  0,-5.1578e-10,0.0038388,-1.414,  0,-0.0038388,-5.1578e-10,3.3218,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <ref id="material_0_003"/>
+    <shape type="mesh" filename="meshes/Object_10.ply"/>
+    <transform>
+      <matrix value="0.0038388,0,0,-0.27548,  0,-5.1578e-10,0.0038388,-1.414,  0,-0.0038388,-5.1578e-10,3.3218,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <ref id="material_0_003"/>
+    <shape type="mesh" filename="meshes/Object_11.ply"/>
+    <transform>
+      <matrix value="0.0038388,0,0,-0.27548,  0,-5.1578e-10,0.0038388,-1.414,  0,-0.0038388,-5.1578e-10,3.3218,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <ref id="material_0_003"/>
+    <shape type="mesh" filename="meshes/Object_12.ply"/>
+    <transform>
+      <matrix value="0.0038388,0,0,-0.27548,  0,-5.1578e-10,0.0038388,-1.414,  0,-0.0038388,-5.1578e-10,3.3218,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <ref id="material_0_003"/>
+    <shape type="mesh" filename="meshes/Object_13.ply"/>
+    <transform>
+      <matrix value="0.0038388,0,0,-0.27548,  0,-5.1578e-10,0.0038388,-1.414,  0,-0.0038388,-5.1578e-10,3.3218,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <ref id="material_0_003"/>
+    <shape type="mesh" filename="meshes/Object_14.ply"/>
+    <transform>
+      <matrix value="0.0038388,0,0,-0.27548,  0,-5.1578e-10,0.0038388,-1.414,  0,-0.0038388,-5.1578e-10,3.3218,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <ref id="material_0_003"/>
+    <shape type="mesh" filename="meshes/Object_15.ply"/>
+    <transform>
+      <matrix value="0.0038388,0,0,-0.27548,  0,-5.1578e-10,0.0038388,-1.414,  0,-0.0038388,-5.1578e-10,3.3218,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <bsdf type="principled">
+      <texture name="baseColor" type="image" filename="textures/Poster_baseColor.png"/>
+      <texture name="roughness" type="image" filename="textures/Poster_Roughness.png"/>
+      <texture name="metallic" type="image" filename="textures/Poster_Metallic.png"/>
+      <texture name="specular" type="constant" value="0"/>
+    </bsdf>
+    <texture name="normal" type="image" filename="textures/Poster_normal.png" linear="true"/>
+    <shape type="mesh" filename="meshes/Poster_Poster_0.ply"/>
+    <transform>
+      <matrix value="0.000962,-0.0099536,1.703e-09,1.0045,  0.0099536,0.000962,7.7157e-10,-2.0579,  1.7429e-09,1.8794e-09,0.01,3.0358,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <bsdf type="principled">
+      <texture name="baseColor" type="image" filename="textures/lambert2SG_baseColor.jpeg"/>
+      <texture name="roughness" type="constant" value="1"/>
+      <texture name="metallic" type="constant" value="0"/>
+      <texture name="specular" type="constant" value="0"/>
+    </bsdf>
+    <shape type="mesh" filename="meshes/Object_0.005.ply"/>
+    <transform>
+      <matrix value="-0.0053939,-0.00087288,0.0011543,0.33701,  0.00089214,-0.005513,1.0665e-09,-3.8434,  0.0011395,0.00018439,0.0054641,0.66568,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <bsdf type="principled">
+      <texture name="baseColor" type="image" filename="textures/poster_mat_baseColor.png"/>
+      <texture name="roughness" type="image" filename="textures/poster_mat_Roughness.png"/>
+      <texture name="metallic" type="constant" value="0"/>
+      <texture name="specular" type="constant" value="0"/>
+    </bsdf>
+    <texture name="normal" type="image" filename="textures/poster_mat_normal.png" linear="true"/>
+    <shape type="mesh" filename="meshes/Poster1_poster_mat_0.ply"/>
+    <transform>
+      <matrix value="0.0099298,-0.0011825,2.55e-10,1.1212,  0.0011825,0.0099298,8.331e-11,-3.625,  1.309e-09,1.2128e-09,0.01,0.34517,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <bsdf type="principled">
+      <texture name="baseColor" type="constant" value="0.49525,0.46614,0.43149"/>
+      <texture name="roughness" type="constant" value="0.28663"/>
+      <texture name="metallic" type="constant" value="0.98873"/>
+      <texture name="specular" type="constant" value="0"/>
+    </bsdf>
+    <shape type="mesh" filename="meshes/Poster1_pushpin_mat_0.ply"/>
+    <transform>
+      <matrix value="-0.00021673,-0.0099977,1.3433e-09,0.94338,  0.0099977,-0.00021673,1.4409e-09,-0.68369,  0,-6.818e-11,0.01,0.61276,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <bsdf id="1001" type="principled">
+      <texture name="baseColor" type="image" filename="textures/1001_baseColor.jpeg"/>
+      <texture name="roughness" type="image" filename="textures/1001_Roughness.png"/>
+      <texture name="metallic" type="image" filename="textures/1001_Metallic.png"/>
+      <texture name="specular" type="constant" value="0"/>
+    </bsdf>
+    <texture name="normal" id="1001.000" type="image" filename="textures/1001_normal.png" linear="true"/>
+    <shape type="mesh" filename="meshes/defaultMaterial.008.ply"/>
+    <transform>
+      <matrix value="0.011186,0,0,-0.97494,  0,0.011186,1.1102e-16,-2.6866,  0,-1.1102e-16,0.011186,-0.62615,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <ref id="1001"/>
+    <ref name="normal" id="1001.000"/>
+    <shape type="mesh" filename="meshes/defaultMaterial.004.ply"/>
+    <transform>
+      <matrix value="0.011186,0,0,-0.97494,  0,0.011186,1.1102e-16,-2.6866,  0,-1.1102e-16,0.011186,-0.62615,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <ref id="1001"/>
+    <ref name="normal" id="1001.000"/>
+    <shape type="mesh" filename="meshes/defaultMaterial.003.ply"/>
+    <transform>
+      <matrix value="0.011186,0,0,-0.97494,  0,0.011186,1.1102e-16,-2.6866,  0,-1.1102e-16,0.011186,-0.62615,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <ref id="1001"/>
+    <ref name="normal" id="1001.000"/>
+    <shape type="mesh" filename="meshes/defaultMaterial.007.ply"/>
+    <transform>
+      <matrix value="0.011186,0,0,-0.97494,  0,0.011186,1.1102e-16,-2.6866,  0,-1.1102e-16,0.011186,-0.62615,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <ref id="1001"/>
+    <ref name="normal" id="1001.000"/>
+    <shape type="mesh" filename="meshes/defaultMaterial.006.ply"/>
+    <transform>
+      <matrix value="0.011186,0,0,-0.97494,  0,0.011186,1.1102e-16,-2.6866,  0,-1.1102e-16,0.011186,-0.62615,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <ref id="1001"/>
+    <ref name="normal" id="1001.000"/>
+    <shape type="mesh" filename="meshes/defaultMaterial.002.ply"/>
+    <transform>
+      <matrix value="0.011186,0,0,-0.97494,  0,0.011186,1.1102e-16,-2.6866,  0,-1.1102e-16,0.011186,-0.62615,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <bsdf type="principled">
+      <texture name="baseColor" type="image" filename="textures/lambert_baseColor.jpeg"/>
+      <texture name="roughness" type="image" filename="textures/lambert_Roughness.png"/>
+      <texture name="metallic" type="image" filename="textures/lambert_Metallic.png"/>
+      <texture name="specular" type="constant" value="0"/>
+    </bsdf>
+    <texture name="normal" type="image" filename="textures/lambert_normal.png"/>
+    <shape type="mesh" filename="meshes/pCube2_lambert1_0.ply"/>
+    <transform>
+      <matrix value="-0.012054,-0.0076664,1.0049e-09,-0.77588,  0.0076664,-0.012054,2.0564e-09,-1.1808,  -1.2511e-10,1.5941e-09,0.014286,0.15723,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <bsdf type="principled">
+      <texture name="baseColor" type="image" filename="textures/Globe_Base_baseColor.png"/>
+      <texture name="roughness" type="image" filename="textures/Globe_Base_Roughness.png"/>
+      <texture name="metallic" type="image" filename="textures/Globe_Base_Metallic.png"/>
+      <texture name="specular" type="constant" value="0"/>
+    </bsdf>
+    <texture name="normal" type="image" filename="textures/Globe_Base_normal.png" linear="true"/>
+    <shape type="mesh" filename="meshes/Globe Base_low.001_Globe Base_0.ply"/>
+    <transform>
+      <matrix value="0.20473,0,0,-0.19013,  0,-6.2021e-08,0.20473,-0.87541,  0,-0.20473,-6.2021e-08,0.17459,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <bsdf type="principled">
+      <texture name="baseColor" type="image" filename="textures/Globe.003_baseColor.png"/>
+      <texture name="roughness" type="image" filename="textures/Globe.003_Roughness.png"/>
+      <texture name="metallic" type="constant" value="0"/>
+      <texture name="specular" type="constant" value="0"/>
+    </bsdf>
+    <texture name="normal" type="image" filename="textures/Globe.003_normal.png" linear="true"/>
+    <shape type="mesh" filename="meshes/Globe_low.001_Globe.003_0.ply"/>
+    <transform>
+      <matrix value="0.18665,-0.0089373,0.083639,-0.19643,  -0.083665,-0.040756,0.18235,-0.87541,  0.0086898,-0.20043,-0.040809,0.60901,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <bsdf type="principled">
+      <texture name="baseColor" type="image" filename="textures/material_0_diffuse.png"/>
+      <texture name="roughness" type="constant" value="0.43766"/>
+      <texture name="metallic" type="constant" value="0"/>
+      <texture name="specular" type="constant" value="0"/>
+    </bsdf>
+    <shape type="mesh" filename="meshes/Object_0.003.ply"/>
+    <transform>
+      <matrix value="0.0010799,-4.8143e-11,0.00043241,-0.0041832,  -0.00043241,-2.0033e-10,0.0010799,-0.20606,  -4.8143e-11,-0.0011633,-2.1889e-10,0.15643,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <bsdf type="iridescence">
+        <float name="thickness" value="0.4"/> 
+        <float name="ior_film" value="1.5"/>
+        <float name="ior_base" value="0.2"/>
+        <float name="kappa3" value="0.5"/>
+        <texture name="roughness" type="constant" value="0.25"/>
+    </bsdf>
+    <texture name="normal" type="image" filename="textures/11_-_Default_normal.png"/>
+    <shape type="mesh" filename="meshes/Group37191_01 - Default_0.ply"/>
+    <transform>
+      <matrix value="-0.010892,0.011028,-0.00022042,-0.49258,  0.011031,0.01089,-0.00021766,-0.2197,  7.7125e-10,-0.00030977,-0.015499,0.3263,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <bsdf type="principled">
+      <texture name="baseColor" type="image" filename="textures/DefaultMaterial_1001_baseColor.jpeg"/>
+      <texture name="roughness" type="image" filename="textures/DefaultMaterial_1001_Roughness.png"/>
+      <texture name="metallic" type="image" filename="textures/DefaultMaterial_1001_Metallic.png"/>
+      <texture name="specular" type="constant" value="0"/>
+    </bsdf>
+    <texture name="normal" type="image" filename="textures/DefaultMaterial_1001_normal.png" linear="true"/>
+    <shape type="mesh" filename="meshes/defaultMaterial.ply"/>
+    <transform>
+      <matrix value="-0.0038387,-0.0078234,1.0511e-09,0.58209,  0.0078234,-0.0038387,9.9482e-10,-0.46879,  0,6.918e-10,0.0087144,0.19524,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <ref id="Books_Material"/>
+    <ref name="normal" id="Books_Material.000"/>
+    <ref name="alpha" id="Books_Material.001"/>
+    <shape type="mesh" filename="meshes/Book_frame_Books_Material_0.ply"/>
+    <transform>
+      <matrix value="-0.11323,0.075631,-0.037625,0.028491,  -0.084443,-0.10302,0.047047,-0.82795,  -0.0022507,0.0602,0.12778,-0.30274,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <ref id="Books_Material"/>
+    <ref name="normal" id="Books_Material.000"/>
+    <ref name="alpha" id="Books_Material.001"/>
+    <shape type="mesh" filename="meshes/Book_sheets_Books_Material_0.ply"/>
+    <transform>
+      <matrix value="-0.11323,0.075631,-0.037625,0.028491,  -0.084443,-0.10302,0.047047,-0.82795,  -0.0022507,0.0602,0.12778,-0.30274,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <ref id="Books_Material"/>
+    <ref name="normal" id="Books_Material.000"/>
+    <ref name="alpha" id="Books_Material.001"/>
+    <shape type="mesh" filename="meshes/Lloose_sheet_01_Books_Material_0.ply"/>
+    <transform>
+      <matrix value="-0.11323,0.075631,-0.037625,0.02923,  -0.084443,-0.10302,0.047047,-0.82928,  -0.0022507,0.0602,0.12778,-0.3056,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <ref id="Books_Material"/>
+    <ref name="normal" id="Books_Material.000"/>
+    <ref name="alpha" id="Books_Material.001"/>
+    <shape type="mesh" filename="meshes/Loose_sheet_02_Books_Material_0.ply"/>
+    <transform>
+      <matrix value="-0.11323,0.075631,-0.037625,0.02923,  -0.084443,-0.10302,0.047047,-0.82928,  -0.0022507,0.0602,0.12778,-0.3056,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <ref id="Books_Material"/>
+    <ref name="normal" id="Books_Material.000"/>
+    <ref name="alpha" id="Books_Material.001"/>
+    <shape type="mesh" filename="meshes/Loose_sheet_03_Books_Material_0.ply"/>
+    <transform>
+      <matrix value="-0.11323,0.075631,-0.037625,0.02923,  -0.084443,-0.10302,0.047047,-0.82928,  -0.0022507,0.0602,0.12778,-0.3056,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <ref id="Books_Material"/>
+    <ref name="normal" id="Books_Material.000"/>
+    <ref name="alpha" id="Books_Material.001"/>
+    <shape type="mesh" filename="meshes/Loose_Sheet_04_Books_Material_0.ply"/>
+    <transform>
+      <matrix value="-0.11323,0.075631,-0.037625,0.028491,  -0.084443,-0.10302,0.047047,-0.82795,  -0.0022507,0.0602,0.12778,-0.30274,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <ref id="Books_Material"/>
+    <ref name="normal" id="Books_Material.000"/>
+    <ref name="alpha" id="Books_Material.001"/>
+    <shape type="mesh" filename="meshes/Key_circle_Books_Material_0.ply"/>
+    <transform>
+      <matrix value="-0.025649,-0.13892,-0.00059265,0.28911,  0.13859,-0.02563,0.0096494,-1.6998,  -0.0095964,0.0011706,0.14094,0.26875,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <ref id="Books_Material"/>
+    <ref name="normal" id="Books_Material.000"/>
+    <ref name="alpha" id="Books_Material.001"/>
+    <shape type="mesh" filename="meshes/Plane1_Books_Material_0.ply"/>
+    <transform>
+      <matrix value="-0.11637,0.087248,-0.0061127,-0.036482,  -0.078897,-0.12689,-0.015542,-0.64828,  -0.013812,-0.010257,0.14028,0.11644,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <ref id="Books_Material"/>
+    <ref name="normal" id="Books_Material.000"/>
+    <ref name="alpha" id="Books_Material.001"/>
+    <shape type="mesh" filename="meshes/Plane2_Books_Material_0.ply"/>
+    <transform>
+      <matrix value="-0.11323,0.081737,0.021324,-0.047361,  -0.084443,-0.10857,-0.032216,-0.74263,  -0.0022507,-0.038568,0.13588,0.29677,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <ref id="Books_Material"/>
+    <ref name="normal" id="Books_Material.000"/>
+    <ref name="alpha" id="Books_Material.001"/>
+    <shape type="mesh" filename="meshes/Quill_Body_Books_Material_0.ply"/>
+    <transform>
+      <matrix value="-0.17048,0.012342,0.0019186,0.58516,  -0.011693,-0.16694,0.034835,-0.94744,  0.0043888,0.03461,0.16734,0.13196,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <ref id="Books_Material"/>
+    <ref name="normal" id="Books_Material.000"/>
+    <ref name="alpha" id="Books_Material.001"/>
+    <shape type="mesh" filename="meshes/Quill_Tip_Books_Material_0.ply"/>
+    <transform>
+      <matrix value="-0.17048,0.012342,0.0019186,0.58516,  -0.011693,-0.16694,0.034835,-0.94744,  0.0043888,0.03461,0.16734,0.13196,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <bsdf type="principled">
+      <texture name="baseColor" type="image" filename="textures/02___Default_baseColor.jpeg"/>
+      <texture name="roughness" type="image" filename="textures/02___Default_Roughness.png"/>
+      <texture name="metallic" type="image" filename="textures/02___Default_Metallic.png"/>
+      <texture name="specular" type="constant" value="0"/>
+    </bsdf>
+    <texture name="normal" type="image" filename="textures/02___Default_normal.png" linear="true"/>
+    <shape type="mesh" filename="meshes/defaultMaterial.005.ply"/>
+    <transform>
+      <matrix value="-0.12499,0.17867,0.070444,0.83565,  -0.18092,-0.13774,0.028354,-0.33774,  0.064454,-0.040151,0.2162,2.1546,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <bsdf type="principled">
+      <texture name="baseColor" type="image" filename="textures/material_0_baseColor.jpeg"/>
+      <texture name="roughness" type="constant" value="0.5"/>
+      <texture name="metallic" type="constant" value="0"/>
+      <texture name="specular" type="constant" value="0"/>
+    </bsdf>
+    <shape type="mesh" filename="meshes/Object_0.001.ply"/>
+    <transform>
+      <matrix value="2.565,0,0,0.34684,  0,0.90438,2.4003,-0.26146,  0,-2.4003,0.90438,2.1818,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <bsdf type="principled">
+      <texture name="baseColor" type="image" filename="textures/cup_low_cup_texture_BaseColor.png"/>
+      <texture name="roughness" type="image" filename="textures/cup_low_cup_texture_Roughness.png"/>
+      <texture name="metallic" type="image" filename="textures/cup_low_cup_texture_Metallic.png"/>
+      <texture name="specular" type="constant" value="0"/>
+    </bsdf>
+    <texture name="normal" type="constant" value="0.5,0.5,1"/>
+    <shape type="mesh" filename="meshes/Plane.003.ply"/>
+    <transform>
+      <matrix value="-4.399,-0.52105,-8.489e-08,-0.39313,  0.52105,-4.399,-7.1668e-07,-0.13536,  0,-7.2169e-07,4.4297,1.9479,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <bsdf id="Candle_Holder" type="principled">
+      <texture name="baseColor" id="Image Texture" type="image" filename="textures/Candle_baseColor.png"/>
+      <texture name="roughness" type="image" filename="textures/Candle_Holder_Roughness.png"/>
+      <texture name="metallic" type="image" filename="textures/Candle_Holder_Metallic.png"/>
+      <texture name="specular" type="constant" value="0"/>
+    </bsdf>
+    <texture name="normal" id="Image Texture_002" type="image" filename="textures/Candle_normal.png" linear="true"/>
+    <shape type="mesh" filename="meshes/Object_2.001.ply"/>
+    <transform>
+      <matrix value="2.1656,4.6791e-23,3.4825e-16,-0.21554,  0,2.1656,0,-0.3897,  -3.4825e-16,0,2.1656,2.1172,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <bsdf type="principled">
+      <ref name="baseColor" id="Image Texture"/>
+      <texture name="roughness" type="image" filename="textures/Candle_Roughness.png"/>
+      <texture name="metallic" type="image" filename="textures/Candle_Metallic.png"/>
+      <texture name="specular" type="constant" value="0"/>
+    </bsdf>
+    <ref name="normal" id="Image Texture_002"/>
+    <shape type="mesh" filename="meshes/Object_0.002.ply"/>
+    <transform>
+      <matrix value="2.1656,4.6791e-23,3.4825e-16,-0.23125,  0,2.1656,0,-0.3895,  -3.4825e-16,0,2.1656,2.4618,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <ref id="Candle_Holder"/>
+    <ref name="normal" id="Image Texture_002"/>
+    <shape type="mesh" filename="meshes/Object_1.001.ply"/>
+    <transform>
+      <matrix value="2.1656,4.6791e-23,3.4825e-16,-0.23125,  0,2.1656,0,-0.3895,  -3.4825e-16,0,2.1656,2.4618,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <bsdf type="principled">
+      <texture name="baseColor" type="image" filename="textures/01_-_Default_baseColor.png"/>
+      <texture name="roughness" type="image" filename="textures/01_-_Default_Roughness.png"/>
+      <texture name="metallic" type="image" filename="textures/01_-_Default_Metallic.png"/>
+      <texture name="specular" type="constant" value="0"/>
+    </bsdf>
+    <texture name="normal" type="image" filename="textures/01_-_Default_normal.png" linear="true"/>
+    <shape type="mesh" filename="meshes/24CL0019_01 - Default_0.ply"/>
+    <transform>
+      <matrix value="-0.040462,-0.0083637,1.4893e-09,0.12893,  0.0083637,-0.040462,8.4926e-09,-0.079915,  0,6.0698e-09,0.041317,1.9372,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <bsdf type="principled">
+      <texture name="baseColor" type="image" filename="textures/Metal01_diffuse_xtm.jpg"/>
+      <texture name="roughness" type="image" filename="textures/Metal01_roughness_xtm.jpg" linear="true"/>
+      <texture name="metallic" type="image" filename="textures/Metal01_metal_xtm.jpg" linear="true"/>
+      <texture name="specular" type="constant" value="0"/>
+    </bsdf>
+    <texture name="normal" type="image" filename="textures/Metal01_normal_xtm.jpg" linear="true"/>
+    <shape type="mesh" filename="meshes/Cube.009.ply"/>
+    <transform>
+      <matrix value="0.18268,0,0,-0.69895,  0,0.18268,3.5848e-08,-1.5795,  0,-2.9763e-08,0.22003,2.7519,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <bsdf type="principled">
+      <texture name="baseColor" type="image" filename="textures/1920s_Ceiling_Pendant_Lamp_Type_A_Ornate_02_baseColor.png"/>
+      <texture name="roughness" type="image" filename="textures/1920s_Ceiling_Pendant_Lamp_Type_A_Ornate_02_Roughness.png"/>
+      <texture name="metallic" type="image" filename="textures/1920s_Ceiling_Pendant_Lamp_Type_A_Ornate_02_Metallic.png"/>
+      <texture name="specular" type="constant" value="0"/>
+    </bsdf>
+    <texture name="normal" type="image" filename="textures/1920s_Ceiling_Pendant_Lamp_Type_A_Ornate_02_normal.png" linear="true"/>
+    <shape type="mesh" filename="meshes/Object_3.ply"/>
+    <transform>
+      <matrix value="1.5253,0,0,0.48058,  0,1,0,-0.59473,  0,0,0.91062,2.8401,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <ref id="green_rough_planks"/>
+    <ref name="normal" id="green_rough_planks.000"/>
+    <shape type="mesh" filename="meshes/Cube.005.ply"/>
+    <transform>
+      <matrix value="1.144,0,0,0.031266,  0,0.24691,0,0.22107,  0,0,0.065878,0.11066,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <ref id="green_rough_planks"/>
+    <ref name="normal" id="green_rough_planks.000"/>
+    <shape type="mesh" filename="meshes/Cube.006.ply"/>
+    <transform>
+      <matrix value="1.144,0,0,0.021383,  0,0.24691,0,0.092313,  0,0,0.033294,3.4933,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <bsdf type="principled">
+      <texture name="baseColor" type="image" filename="textures/brick_baseColor.png"/>
+      <texture name="roughness" type="constant" value="0.5"/>
+      <texture name="metallic" type="image" filename="textures/material_0_Metallic.png"/>
+      <texture name="specular" type="constant" value="0"/>
+    </bsdf>
+    <texture name="normal" type="image" filename="textures/brick_normal.png"/>
+    <shape type="mesh" filename="meshes/Grid.003.ply"/>
+    <transform>
+      <matrix value="6.4875,0,0,0,  0,-2.8358e-07,-6.4875,0.075904,  0,6.4875,-2.8358e-07,1.8231,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <bsdf type="principled">
+      <texture name="baseColor" type="image" filename="textures/stat_baseColor.jpeg"/>
+      <texture name="roughness" type="constant" value="0.90843"/>
+      <texture name="metallic" type="constant" value="0"/>
+      <texture name="specular" type="constant" value="0"/>
+    </bsdf>
+    <shape type="mesh" filename="meshes/default_stat_0.ply"/>
+    <transform>
+      <matrix value="-0.0087547,-2.1724e-09,0.019072,-0.80315,  -0.019072,1.8895e-09,-0.0087547,0.86798,  -1.3505e-09,-0.020986,-2.2854e-09,-0.30821,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <bsdf type="principled">
+      <texture name="baseColor" type="image" filename="textures/woodtable_baseColor.png"/>
+      <texture name="roughness" type="image" filename="textures/woodtable_Roughness.png"/>
+      <texture name="metallic" type="image" filename="textures/woodtable_Metallic.png"/>
+      <texture name="specular" type="constant" value="0"/>
+    </bsdf>
+    <texture name="normal" type="image" filename="textures/woodtable_normal.png"/>
+    <shape type="mesh" filename="meshes/Object_0.007.ply"/>
+    <transform>
+      <matrix value="-0.0032473,0.094305,-4.188e-17,0.96608,  0.094305,0.0032473,-1.4421e-18,0.3691,  0,-4.1905e-17,-0.094361,-0.31868,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <bsdf id="Metall_001" type="principled">
+      <texture name="baseColor" type="image" filename="textures/Metall_baseColor.png"/>
+      <texture name="roughness" type="image" filename="textures/Metall_Roughness.png"/>
+      <texture name="metallic" type="image" filename="textures/Metall_Metallic.png"/>
+      <texture name="specular" type="constant" value="0"/>
+    </bsdf>
+    <texture name="normal" id="Metall_001.000" type="image" filename="textures/Metall_normal.png" linear="true"/>
+    <shape type="mesh" filename="meshes/Metall_Metall_0.001.ply"/>
+    <transform>
+      <matrix value="-1.5847,-7.4397e-08,0.44129,0.51789,  -0.44129,2.9728e-07,-1.5847,0.57108,  0,-1.645,-2.4719e-07,-0.30712,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <ref id="Metall_001"/>
+    <ref name="normal" id="Metall_001.000"/>
+    <shape type="mesh" filename="meshes/Metall_(hour_hand)_Metall_0.001.ply"/>
+    <transform>
+      <matrix value="-1.5847,-7.4397e-08,0.44129,0.50864,  -0.44129,2.9728e-07,-1.5847,0.60429,  0,-1.645,-2.4719e-07,-0.10025,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <ref id="Metall_001"/>
+    <ref name="normal" id="Metall_001.000"/>
+    <shape type="mesh" filename="meshes/Metall_(minute_hand)_Metall_0.001.ply"/>
+    <transform>
+      <matrix value="-1.5847,-7.4397e-08,0.44129,0.50809,  -0.44129,2.9728e-07,-1.5847,0.60625,  0,-1.645,-2.4719e-07,-0.10025,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <bsdf type="principled">
+      <texture name="baseColor" type="image" filename="textures/Wood_baseColor.png"/>
+      <texture name="roughness" type="image" filename="textures/Wood_Roughness.png"/>
+      <texture name="metallic" type="image" filename="textures/Wood_Metallic.png"/>
+      <texture name="specular" type="constant" value="0"/>
+    </bsdf>
+    <texture name="normal" type="image" filename="textures/Wood_normal.png" linear="true"/>
+    <shape type="mesh" filename="meshes/Wood_Wood_0.001.ply"/>
+    <transform>
+      <matrix value="-1.5847,-7.4397e-08,0.44129,0.51789,  -0.44129,2.9728e-07,-1.5847,0.57108,  0,-1.645,-2.4719e-07,-0.30712,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <bsdf type="principled">
+      <texture name="baseColor" type="image" filename="textures/Camera_baseColor.png"/>
+      <texture name="roughness" type="image" filename="textures/Camera_Roughness.png"/>
+      <texture name="metallic" type="image" filename="textures/Camera_Metallic.png"/>
+      <texture name="specular" type="constant" value="0"/>
+    </bsdf>
+    <texture name="normal" type="image" filename="textures/Camera_normal.png" linear="true"/>
+    <shape type="mesh" filename="meshes/camera_Camera_0.ply"/>
+    <transform>
+      <matrix value="-0.0017833,0.18304,-0.081021,-0.44291,  0.0071255,-0.080915,-0.18296,0.31168,  -0.20005,-0.0045139,-0.0057946,0.21992,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <bsdf id="material_0_006" type="principled">
+      <texture name="baseColor" type="image" filename="textures/vasegrec_baseColor.jpeg"/>
+      <texture name="roughness" type="constant" value="1"/>
+      <texture name="metallic" type="constant" value="0"/>
+      <texture name="specular" type="constant" value="0"/>
+    </bsdf>
+    <shape type="mesh" filename="meshes/Object_0.008.ply"/>
+    <transform>
+      <matrix value="1.6168,0,0,-0.2108,  0,-2.1723e-07,-1.6168,0.58911,  0,1.6168,-2.1723e-07,-0.12405,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <ref id="material_0_006"/>
+    <shape type="mesh" filename="meshes/Object_1.003.ply"/>
+    <transform>
+      <matrix value="1.6168,0,0,-0.2108,  0,-2.1723e-07,-1.6168,0.58911,  0,1.6168,-2.1723e-07,-0.12405,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <bsdf type="principled">
+      <texture name="baseColor" type="image" filename="textures/urn_diffuse.jpeg"/>
+      <texture name="roughness" type="image" filename="textures/urn_specularGlossiness.png"/>
+      <texture name="metallic" type="constant" value="0"/>
+      <texture name="specular" type="image" filename="textures/urn_specularGlossiness.png"/>
+    </bsdf>
+    <shape type="mesh" filename="meshes/defaultMaterial.009.ply"/>
+    <transform>
+      <matrix value="0.11195,0,0,0.038267,  0,0.11195,1.5543e-15,0.75705,  0,-1.1527e-15,0.15095,-0.17473,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <bsdf type="principled">
+      <texture name="baseColor" type="image" filename="textures/pianostool.1001_baseColor.jpeg"/>
+      <texture name="roughness" type="constant" value="0.81722"/>
+      <texture name="metallic" type="constant" value="0"/>
+      <texture name="specular" type="constant" value="0"/>
+    </bsdf>
+    <shape type="mesh" filename="meshes/Object_0.009.ply"/>
+    <transform>
+      <matrix value="-0.23282,-0.12553,-0.022914,1.4201,  -0.12759,0.22959,0.038704,0.74551,  0.0015159,0.044952,-0.26166,-0.68444,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <bsdf type="principled">
+      <texture name="baseColor" type="image" filename="textures/Material.001_baseColor.png"/>
+      <texture name="roughness" type="image" filename="textures/pottery_Roughness.png"/>
+      <texture name="metallic" type="image" filename="textures/pottery_Metallic.png"/>
+      <texture name="specular" type="constant" value="0"/>
+    </bsdf>
+    <texture name="normal" type="image" filename="textures/Material.001_normal.png" linear="true"/>
+    <shape type="mesh" filename="meshes/Cylinder.003_Material.001_0.ply"/>
+    <transform>
+      <matrix value="0.0038368,1.4872e-08,-0.088214,-0.63949,  0.088214,-1.1513e-08,0.0038368,0.67702,  0,-0.088298,-2.5752e-08,-0.31876,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <bsdf type="principled">
+      <texture name="baseColor" type="image" filename="textures/phone_baseColor.png"/>
+      <texture name="roughness" type="image" filename="textures/phone_Roughness.png"/>
+      <texture name="metallic" type="image" filename="textures/phone_Metallic.png"/>
+      <texture name="specular" type="constant" value="0"/>
+    </bsdf>
+    <texture name="normal" type="image" filename="textures/phone_normal.png"/>
+    <shape type="mesh" filename="meshes/Object_0.006.ply"/>
+    <transform>
+      <matrix value="0.15695,0,-0.055247,0.5596,  0.055247,-9.6542e-09,0.15695,1.0496,  0,-0.16639,-9.6542e-09,-0.32374,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <light type="envmap">
+    <texture type="image" filename="textures/venetian_crossroads_1k.hdr.exr" exposure="1" border="clamp"/>
+    <transform>
+      <matrix value="1,0,0,0,  0,0,1,0,  0,-1,0,0,  0,0,0,1"/>
+      <rotate axis="0,0,1" angle="180"/>
+    </transform>
+  </light>
+</scene>
+<integrator type="pathtracer_mis" depth="10">
+  <ref id="scene"/>
+  <image id="noisy"/>
+  <sampler type="halton" count="64"/>
+</integrator>
+
+<integrator type="aov" variable="albedo">
+    <ref id="scene"/>
+    <image id="albedo"/>
+    <sampler type="independent" count="32"/>
+</integrator>
+
+<integrator type="aov" variable="normals">
+    <ref id="scene"/>
+    <image id="normal"/>
+    <sampler type="independent" count="32"/>
+</integrator>
+
+<postprocess type="denoising">
+    <ref name="input" id="noisy" />
+    <ref name="albedo" id="albedo" />
+    <ref name="normal" id="normal" />
+    <image id="denoising" />
+</postprocess>
+
+<postprocess type="bloom">
+    <ref name="input" id="denoising" />
+    <image id="bloom" />
+</postprocess>
+
+<postprocess type="tonemap" operator="reinhard">
+    <ref name="input" id="bloom" />
+    <image id="tonemapped" />
+</postprocess>

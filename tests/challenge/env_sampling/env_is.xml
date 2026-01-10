@@ -12,7 +12,7 @@
         </camera>
 
         <light type="envmap">
-            <texture type="image" filename="meadow_2_1k.hdr"/>
+            <texture type="image" filename="../textures/meadow_2_1k.hdr"/>
             <transform>
                 <rotate axis="0,1,0" angle="100"/>
             </transform>

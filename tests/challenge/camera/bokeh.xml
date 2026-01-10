@@ -6,9 +6,9 @@
             <integer name="height" value="512"/>
             <string name="fovAxis" value="x"/>
             <float name="fov" value="40"/>
-            <float name="lensRadius" value="1.5"/>
-            <float name="focalDistance" value="5.0"/>
-            <texture name="bokeh" type="image" filename="bokeh_heart.png" /> 
+            <float name="lensRadius" value="0.1"/>
+            <float name="focalDistance" value="3.0"/>
+            <texture name="bokeh" type="image" filename="../textures/bokeh_star.png" /> 
             <transform>
                 <translate z="-5"/> 
             </transform>
@@ -19,11 +19,33 @@
         <instance>
             <shape type="sphere"/>
             <bsdf type="diffuse">
-                <texture name="albedo" type="constant" value="10,10,0"/> 
+                <texture name="albedo" type="constant" value="10,0,0"/> 
             </bsdf>
             <transform>
                 <scale value="0.1"/> 
-                <translate x="0" y="0" z="10"/>
+                <translate x="0" y="0" z="5"/>
+            </transform>
+        </instance>
+
+        <instance>
+            <shape type="sphere"/>
+            <bsdf type="diffuse">
+                <texture name="albedo" type="constant" value="0,0,10"/> 
+            </bsdf>
+            <transform>
+                <scale value="0.1"/> 
+                <translate x="1" y="1" z="5"/>
+            </transform>
+        </instance>
+
+        <instance>
+            <shape type="sphere"/>
+            <bsdf type="diffuse">
+                <texture name="albedo" type="constant" value="0,10,0"/> 
+            </bsdf>
+            <transform>
+                <scale value="0.1"/> 
+                <translate x="-1" y="1" z="5"/>
             </transform>
         </instance>
 

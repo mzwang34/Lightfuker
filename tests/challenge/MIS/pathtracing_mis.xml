@@ -4,8 +4,8 @@
         <camera type="perspective" id="camera">
             <float name="fov" value="25" />
             <string name="fovAxis" value="x" />
-            <integer name="width" value="600" />
-            <integer name="height" value="400" />
+            <integer name="width" value="512" />
+            <integer name="height" value="512" />
             <transform>
                 <lookat origin="32,3.5,0" target="0,3.5,0" up="0,-1,0" />
             </transform>
