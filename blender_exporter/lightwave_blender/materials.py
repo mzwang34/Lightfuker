@@ -115,6 +115,7 @@ def _export_principled_bsdf(registry: SceneRegistry, bsdf_node: RMNode):
         ("sheen", "Sheen"),
         ("sheenTint", "Sheen Tint"),
         ("clearcoat", "Clearcoat"),
+        # ("clearcoatGloss", "Clearcoat Roughness"),
         # ("eta", "IOR"),
     ]:
         node.add_child(export_node(registry, bsdf_node.input(bl_name)), name=lw_name)

@@ -336,10 +336,10 @@ public:
 
         const auto comb = combine(uv, wo);
 
-        if (Frame::cosTheta(wo) < 0) {
-            return { glassWeight * comb.glass.evaluate(wo, wi).value, 
-                     comb.glass.evaluate(wo, wi).pdf };
-        }
+        // if (Frame::cosTheta(wo) < 0) {
+        //     return { glassWeight * comb.glass.evaluate(wo, wi).value, 
+        //              comb.glass.evaluate(wo, wi).pdf };
+        // }
 
         Color f_disney = diffuseWeight * comb.diffuse.evaluate(wo, wi).value + 
                          sheenWeight * comb.sheen.evaluate(wo, wi).value +
@@ -387,11 +387,11 @@ public:
         float pClearcoat = clearcoatWeight * invW;
 
         BsdfSample s;
-        if (Frame::cosTheta(wo) < 0) {
-            s = comb.glass.sample(wo, rng);
-            // return { s.wi, s.weight, pGlass * s.pdf };
-            return { s.wi, s.weight, s.pdf };
-        }
+        // if (Frame::cosTheta(wo) < 0) {
+        //     s = comb.glass.sample(wo, rng);
+        //     // return { s.wi, s.weight, pGlass * s.pdf };
+        //     return { s.wi, s.weight, s.pdf };
+        // }
 
         if (p < pDiffuse) {
             s = comb.diffuse.sample(wo, rng);
