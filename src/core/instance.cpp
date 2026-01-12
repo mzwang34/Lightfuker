@@ -10,17 +10,17 @@ void Instance::transformFrame(SurfaceEvent &surf, const Vector &wo) const {
 
     surf.geometryNormal =
         m_transform->applyNormal(surf.geometryNormal).normalized();
+    surf.tangent = m_transform->apply(surf.tangent).normalized();
     if (m_normal) {
         Vector local_normal = (m_normal->evaluate(surf.uv)).data();
         Vector normal =
             surf.shadingFrame().toWorld(local_normal * 2.f - Vector(1.f));
         surf.shadingNormal = m_transform->applyNormal(normal).normalized();
+        surf.tangent = surf.shadingFrame().tangent.normalized();
     } else {
         surf.shadingNormal =
             m_transform->applyNormal(surf.shadingNormal).normalized();
     }
-
-    surf.tangent = Frame(surf.shadingNormal).tangent;
 
     float scale = m_transform->apply(Vector(1, 0, 0)).length();
     surf.pdf /= (scale * scale); // uniform scale only

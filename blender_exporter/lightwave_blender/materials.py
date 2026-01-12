@@ -77,28 +77,64 @@ def _export_emission_helper(registry: SceneRegistry, color: RMInput, strength: R
     emission.add_child(export_node(registry, color, exposure=emission_scale), name="emission")
     return [emission]
 
+# def _export_principled_bsdf(registry: SceneRegistry, bsdf_node: RMNode):
+#     node = XMLNode("bsdf", type="principled")
+
+#     for (lw_name, bl_name) in [
+#         ("baseColor", "Base Color"),
+#         ("roughness", "Roughness"),
+#         #("subsurface", "Subsurface"),
+#         ("metallic", "Metallic"),
+#         ("specular", "Specular"),
+#         #("specularTint", "Specular Tint"),
+#         #("transmission", "Transmission"),
+#         #("anisotropic", "Anisotropic"),
+#         #("sheen", "Sheen"),
+#         #("sheenTint", "Sheen Tint"),
+#         #("clearcoat", "Clearcoat"),
+#         #("clearcoatRoughness", "Clearcoat Roughness"),
+#         #("ior", "IOR"),
+#     ]:
+#         node.add_child(export_node(registry, bsdf_node.input(bl_name)), name=lw_name)
+    
+#     emission = _export_emission_helper(registry, bsdf_node.input("Emission"), bsdf_node.input("Emission Strength"))
+#     return [node] + emission
+
 def _export_principled_bsdf(registry: SceneRegistry, bsdf_node: RMNode):
-    node = XMLNode("bsdf", type="principled")
+    node = XMLNode("bsdf", type="disney")
 
     for (lw_name, bl_name) in [
         ("baseColor", "Base Color"),
         ("roughness", "Roughness"),
-        #("subsurface", "Subsurface"),
+        ("subsurface", "Subsurface"),
         ("metallic", "Metallic"),
         ("specular", "Specular"),
-        #("specularTint", "Specular Tint"),
-        #("transmission", "Transmission"),
-        #("anisotropic", "Anisotropic"),
-        #("sheen", "Sheen"),
-        #("sheenTint", "Sheen Tint"),
-        #("clearcoat", "Clearcoat"),
-        #("clearcoatRoughness", "Clearcoat Roughness"),
-        #("ior", "IOR"),
+        ("specularTint", "Specular Tint"),
+        ("specularTrans", "Transmission"),
+        ("anisotropic", "Anisotropic"),
+        ("sheen", "Sheen"),
+        ("sheenTint", "Sheen Tint"),
+        ("clearcoat", "Clearcoat"),
+        # ("clearcoatGloss", "Clearcoat Roughness"),
+        # ("eta", "IOR"),
     ]:
         node.add_child(export_node(registry, bsdf_node.input(bl_name)), name=lw_name)
-    
+    clearcoat_rough = bsdf_node.input("Clearcoat Roughness")
+    if clearcoat_rough.has_value() and not clearcoat_rough.is_linked():
+        gloss = 1.0 - float(clearcoat_rough.value)
+        node.add("texture", name="clearcoatGloss", type="constant", value=gloss)
+    # else:
+    #     registry.warn("Linked Clearcoat Roughness not supported for gloss inversion")
+    #     node.add_child(
+    #         export_node(registry, clearcoat_rough),
+    #         name="clearcoatGloss"
+    #     )
+    ior = bsdf_node.input("IOR")
+    if ior.has_value():
+        node.add("float", name="eta", value=float(ior.value))
     emission = _export_emission_helper(registry, bsdf_node.input("Emission"), bsdf_node.input("Emission Strength"))
     return [node] + emission
+
 
 def _export_emission(registry: SceneRegistry, bsdf_node: RMNode):
     return _export_emission_helper(registry, bsdf_node.input("Color"), bsdf_node.input("Strength"))
