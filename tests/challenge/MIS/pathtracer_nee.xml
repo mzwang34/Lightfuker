@@ -1,0 +1,117 @@
+<scene id="scene">
+  <camera type="perspective">
+    <integer name="width" value="512"/>
+    <integer name="height" value="512"/>
+    <float name="fov" value="20"/>
+    <string name="fovAxis" value="x"/>
+    <transform>
+      <matrix value="-1.1921e-07,-8.9407e-08,-1,28.279,  1,-5.9605e-08,-8.9407e-08,-1.2361e-06,  -2.9802e-08,-1,5.9605e-08,3.5,  0,0,0,1"/>
+    </transform>
+  </camera>
+
+  <instance>
+    <bsdf type="roughconductor" id="Smooth">
+        <texture type="constant" name="roughness" value="0.01" />
+        <texture type="constant" name="reflectance" value="0.3" />
+    </bsdf>
+    <shape type="mesh" filename="../meshes/Smooth.ply"/>
+    <transform>
+      <matrix value="0.80576,0.096177,-1.248e-06,0.26407,  -5.3675e-07,1.8782e-08,-4,0,  -0.67324,0.11511,1.6954e-06,4.098,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <bsdf type="roughconductor" id="Glossy">
+        <texture type="constant" name="roughness" value="0.05" />
+        <texture type="constant" name="reflectance" value="0.3" />
+    </bsdf>
+    <shape type="mesh" filename="../meshes/Glossy.ply"/>
+    <transform>
+      <matrix value="0.97206,0.056713,-1.0281e-06,3.0616,  -2.776e-07,-4.8717e-09,-4,0,  -0.39699,0.13887,2.7957e-07,2.717,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <bsdf type="roughconductor" id="Rough">
+        <texture type="constant" name="roughness" value="0.1" />
+        <texture type="constant" name="reflectance" value="0.3" />
+    </bsdf>
+    <shape type="mesh" filename="../meshes/Rough.ply"/>
+    <transform>
+      <matrix value="1.0319,0.027725,-4.7484e-07,7.0998,  -1.5964e-07,2.4917e-08,-4,0,  -0.19408,0.14741,7.6541e-07,1.8189,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <bsdf type="roughconductor" id="SuperRough">
+        <texture type="constant" name="roughness" value="0.25" />
+        <texture type="constant" name="reflectance" value="0.3" />
+    </bsdf>
+    <shape type="mesh" filename="../meshes/SuperRough.ply"/>
+    <transform>
+      <matrix value="1.0422,0.018283,1.4248e-06,10.677,  3.9191e-07,-1.7563e-08,-4,0,  -0.12798,0.14888,-6.4682e-07,1.2338,  0,0,0,1"/>
+    </transform>
+  </instance>
+  
+  <instance>
+    <bsdf id="DiffuseBSDF" type="diffuse">
+      <texture name="albedo" type="constant" value="0.5,0.5,0.5"/>
+    </bsdf>
+    <shape type="mesh" filename="../meshes/Diffuse_0001.ply"/>
+    <transform>
+      <matrix value="9.9,0,0,4.9,  0,23.76,6.0944e-07,0,  0,-1.4627e-06,9.9,0,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance>
+    <ref id="DiffuseBSDF"/>
+    <shape type="mesh" filename="../meshes/Diffuse_0002.ply"/>
+    <transform>
+      <matrix value="1.9276e-06,-1.4627e-06,9.9,-5,  0,23.76,6.0944e-07,0,  -9.9,-2.8479e-13,1.9276e-06,9.9,  0,0,0,1"/>
+    </transform>
+  </instance>
+
+  <instance id="light1">
+    <emission type="lambertian">
+      <texture name="emission" type="constant" value="7.59909, 7.59909, 7.59909"/>
+    </emission>
+    <shape type="sphere" />
+    <transform>
+      <scale value="1" />
+      <matrix value="1,0,0,0,  0,1,0,2.8,  0,0,1,6.5,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance id="light2">
+    <emission type="lambertian">
+      <texture name="emission" type="constant" value="30.3964, 30.3964, 30.3964"/>
+    </emission>
+    <shape type="sphere" />
+    <transform>
+      <scale value="0.5" />
+      <matrix value="1,0,0,0,  0,1,0,0,  0,0,1,6.5,  0,0,0,1"/>
+    </transform>
+  </instance>
+  <instance id="light3">
+    <emission type="lambertian">
+      <texture name="emission" type="constant" value="3039.64, 3039.64, 3039.64"/>
+    </emission>
+    <shape type="sphere" />
+    <transform>
+      <scale value="0.05" />
+      <matrix value="1,0,0,0,  0,1,0,-2.7,  0,0,1,6.5,  0,0,0,1"/>
+    </transform>
+  </instance>
+
+  <light type="area">
+      <ref id="light1" />
+  </light>
+
+  <light type="area">
+      <ref id="light2" />
+  </light>
+
+  <light type="area">
+      <ref id="light3" />
+  </light>
+</scene>
+<integrator type="pathtracer_mis" depth="5" strategy="nee">
+  <ref id="scene"/>
+  <image id="pathtracer_nee"/>
+  <sampler type="independent" count="64"/>
+</integrator>
