@@ -3,7 +3,7 @@ from .utils import *
 from .defaults import *
 from .registry import SceneRegistry
 from .xml_node import XMLNode
-
+import math
 
 def _export_area_light(registry: SceneRegistry, instance_node, light: bpy.types.Light, inst: bpy.types.DepsgraphObjectInstance):
     # Compute actual matrix
@@ -86,6 +86,47 @@ def export_light(registry: SceneRegistry, inst):
         position = str_flat_array([ inst.matrix_world[dim][2] for dim in range(3) ])
         return [XMLNode("light", type="directional", direction=position, intensity=intensity, **temperature_args)]
 
+    if light.type == "SPOT":
+        print("Exporting SPOT light:", inst.object.name)
+        # Position
+        position = str_flat_array([
+            inst.matrix_world[0][3],
+            inst.matrix_world[1][3],
+            inst.matrix_world[2][3]
+        ])
+
+        # Direction (Blender spots point along -Z)
+        direction = str_flat_array([
+            -inst.matrix_world[0][2],
+            -inst.matrix_world[1][2],
+            -inst.matrix_world[2][2]
+        ])
+
+        # Exposure-scaled RGB power
+        power_rgb = [
+            exposure_scale * light.energy * light.color[c]
+            for c in range(3)
+        ]
+
+        # Convert radians → degrees, full cone → half angle
+        angle = math.degrees(light.spot_size * 0.5)
+
+        # Soft falloff start
+        falloff_start = angle * (1.0 - light.spot_blend)
+
+        return [
+            XMLNode(
+                "light",
+                type="spot",
+                position=position,
+                direction=direction,
+                power=str_flat_array(power_rgb),
+                angle=f"{angle:.4f}",
+                falloffStart=f"{falloff_start:.4f}",
+                **temperature_args
+            )
+        ]
+    
     if registry.settings.enable_area_lights:
         light_node = XMLNode("light", type="area")
         instance_node = light_node.add("instance") # id=registry._make_unique_name(light.name)
