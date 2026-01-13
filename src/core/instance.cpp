@@ -16,7 +16,7 @@ void Instance::transformFrame(SurfaceEvent &surf, const Vector &wo) const {
         Vector normal =
             surf.shadingFrame().toWorld(local_normal * 2.f - Vector(1.f));
         surf.shadingNormal = m_transform->applyNormal(normal).normalized();
-        surf.tangent = surf.shadingFrame().tangent.normalized();
+        surf.tangent       = surf.shadingFrame().tangent.normalized();
     } else {
         surf.shadingNormal =
             m_transform->applyNormal(surf.shadingNormal).normalized();
@@ -54,9 +54,11 @@ inline void validateIntersection(const Intersection &its) {
 }
 
 bool Instance::hasAlpha(Intersection &its, Sampler &rng) const {
-    if (!m_alpha) return false;
+    if (!m_alpha)
+        return false;
     float alpha = m_alpha->scalar(its.uv);
-    if (alpha < rng.next()) return true;
+    if (alpha < rng.next())
+        return true;
     return false;
 }
 
@@ -67,7 +69,8 @@ bool Instance::intersect(const Ray &worldRay, Intersection &its,
         const Ray localRay        = worldRay;
         const bool wasIntersected = m_shape->intersect(localRay, its, rng);
         if (wasIntersected) {
-            if (hasAlpha(its, rng)) return false;
+            if (hasAlpha(its, rng))
+                return false;
             its.instance = this;
             validateIntersection(its);
         }
@@ -80,7 +83,7 @@ bool Instance::intersect(const Ray &worldRay, Intersection &its,
     // hints:
     // * transform the ray (do not forget to normalize!)
     // * how does its.t need to change?
-    localRay = m_transform->inverse(worldRay);
+    localRay  = m_transform->inverse(worldRay);
     float len = localRay.direction.length();
     localRay  = localRay.normalized();
     its.t *= len;
@@ -117,9 +120,9 @@ float Instance::transmittance(const Ray &worldRay, float tMax,
     Intersection its(-localRay.direction, tMax);
     if (m_shape->intersect(localRay, its, rng)) {
         if (hasAlpha(its, rng))
-            return m_alpha->scalar(its.uv);
+            return 1.f - m_alpha->scalar(its.uv);
         return 0.f;
-    } 
+    }
     return 1.f;
 }
 
@@ -163,7 +166,7 @@ AreaSample Instance::sampleArea(Sampler &rng) const {
     return sample;
 }
 
-AreaSample Instance::sampleArea(const Point& origin, Sampler &rng) const {
+AreaSample Instance::sampleArea(const Point &origin, Sampler &rng) const {
     Point localOrigin = m_transform->inverse(origin);
     AreaSample sample = m_shape->sampleArea(localOrigin, rng);
     transformFrame(sample, Vector());
