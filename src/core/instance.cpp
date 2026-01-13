@@ -106,11 +106,7 @@ bool Instance::intersect(const Ray &worldRay, Intersection &its,
 
 float Instance::transmittance(const Ray &worldRay, float tMax,
                               Sampler &rng) const {
-    if (!m_transform) {
-        return m_shape->transmittance(worldRay, tMax, rng);
-    }
-
-    Ray localRay = m_transform->inverse(worldRay);
+    Ray localRay = m_transform ? m_transform->inverse(worldRay) : worldRay;
 
     const float dLength = localRay.direction.length();
     if (dLength == 0)
@@ -118,7 +114,13 @@ float Instance::transmittance(const Ray &worldRay, float tMax,
     localRay.direction /= dLength;
     tMax *= dLength;
 
-    return m_shape->transmittance(localRay, tMax, rng);
+    Intersection its(-localRay.direction, tMax);
+    if (m_shape->intersect(localRay, its, rng)) {
+        if (hasAlpha(its, rng))
+            return m_alpha->scalar(its.uv);
+        return 0.f;
+    } 
+    return 1.f;
 }
 
 Bounds Instance::getBoundingBox() const {
