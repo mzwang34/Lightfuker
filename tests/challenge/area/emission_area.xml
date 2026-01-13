@@ -11,7 +11,7 @@
                 <translate z="-5"/>
             </transform>
         </camera>
-        <light type="area" improved="false">
+        <light type="area">
             <instance>
                 <shape type="sphere"/>
                 <emission type="lambertian">

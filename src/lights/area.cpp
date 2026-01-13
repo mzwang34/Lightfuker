@@ -10,7 +10,7 @@ public:
     AreaLight(const Properties &properties) : Light(properties) {
         m_instance = properties.getChild<Instance>();
         m_instance->setLight(this);
-        m_improvedSampling = properties.get<bool>("improved", true);
+        m_improvedSampling = properties.get<bool>("improved", false);
     }
 
     DirectLightSample sampleDirect(const Point &origin,
