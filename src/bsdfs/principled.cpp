@@ -12,7 +12,7 @@ struct DiffuseLobe {
         // NOT_IMPLEMENTED
         if (!Frame::sameHemisphere(wi, wo))
             return BsdfEval::invalid();
-        return BsdfEval{ color * InvPi * Frame::cosTheta(wi), abs(wi.z()) * InvPi };
+        return BsdfEval{ color * InvPi * Frame::absCosTheta(wi), abs(wi.z()) * InvPi };
 
         // hints:
         // * copy your diffuse bsdf evaluate here
