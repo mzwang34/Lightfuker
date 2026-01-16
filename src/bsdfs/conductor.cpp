@@ -26,6 +26,10 @@ public:
         return BsdfSample{ wi, weight, 1.f };
     }
 
+    Color getAlbedo(const Intersection &its) const override {
+        return m_reflectance->evaluate(its.uv);
+    }
+
     std::string toString() const override {
         return tfm::format(
             "Conductor[\n"

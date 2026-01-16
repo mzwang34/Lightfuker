@@ -85,6 +85,10 @@ public:
      */
     virtual BsdfSample sample(const Point2 &uv, const Vector &wo,
                               Sampler &rng) const = 0;
+    
+    virtual Color getAlbedo(const Intersection &its) const {
+        return Color(0.f);
+    }
 };
 
 } // namespace lightwave

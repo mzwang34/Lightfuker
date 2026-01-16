@@ -416,6 +416,10 @@ public:
         return {s.wi, weight, e.pdf}; 
     }
 
+    Color getAlbedo(const Intersection &its) const override {
+        return m_baseColor->evaluate(its.uv);
+    }
+    
     std::string toString() const override {
         return tfm::format(
             "Disney[\n"
