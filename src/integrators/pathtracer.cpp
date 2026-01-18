@@ -33,7 +33,7 @@ public:
                 LightSample lightSample = m_scene->sampleLight(rng);             
                 if (lightSample) {
                     const Light *light = lightSample.light;
-                    if (!light->canBeIntersected()) {
+                    if (!light->canBeIntersected() && light->Bounce() >= path_len) {
                         DirectLightSample dSample = light->sampleDirect(its.position, rng);
 
                         Ray shadowRay{ its.position, dSample.wi };

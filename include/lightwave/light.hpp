@@ -58,10 +58,12 @@ protected:
      * divided by the total weight of all light sources in the scene.
      */
     float m_samplingWeight;
+    int m_bounce;
 
 public:
     Light(const Properties &properties) {
         m_samplingWeight = properties.get<float>("weight", 1.f);
+        m_bounce = properties.get<int>("bounce", 1024);
     }
 
     /**
@@ -85,6 +87,8 @@ public:
     /// @brief Returns whether this light source can be hit by rays (i.e., has
     /// an area that has been placed within the scene).
     virtual bool canBeIntersected() const { return false; }
+
+    int Bounce() const {return m_bounce;}
 };
 
 /**
