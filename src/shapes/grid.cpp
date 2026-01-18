@@ -105,13 +105,6 @@ public:
             1.f / (pMax.z() - pMin.z())
         );
 
-        std::cout << "VOL BBOX min = (" 
-                << pMin.x() << ", "
-                << pMin.y() << ", "
-                << pMin.z() << ")  max = ("
-                << pMax.x() << ", "
-                << pMax.y() << ", "
-                << pMax.z() << ")" << std::endl;
         // ------------------------------------------------------------
         // 4. Read voxel data
         // ------------------------------------------------------------
@@ -132,8 +125,6 @@ public:
         } else {
             invMaxDensity = 0.f;
         }
-        std::cout << "VOL resolution: " << dimX << " " << dimY << " " << dimZ << std::endl;
-        std::cout << "Max density: " << m_maxDensity << std::endl;
     }
 
     bool intersect(const Ray &ray, Intersection &its,
@@ -154,7 +145,6 @@ public:
                 its.shadingNormal = -ray.direction; 
                 its.geometryNormal = -ray.direction;
                 its.tangent = Frame(its.shadingNormal).tangent;
-                // std::cout << "Volume hit!" << std::endl;
                 return true;
             }
         }
@@ -213,9 +203,14 @@ private:
         return m_density[(p.z() * m_resolution.y() + p.y()) * m_resolution.x() + p.x()];
     }
 
+    Point Normalize (const Point &p) const {
+        Point pOffset(p.x() - m_bounds.min().x(), p.y() - m_bounds.min().y(), p.z() - m_bounds.min().z());
+        return Point(pOffset.x() * m_invExtent.x(), pOffset.y() * m_invExtent.y(), pOffset.z() * m_invExtent.z());
+    }
     float getDensity(const Point &p) const {
         // Point pSamples(p.x() * m_resolution.x() - 0.5f, p.y() * m_resolution.y() - 0.5f, p.z() * m_resolution.z() - 0.5f);
-        Point pSamples(p.x() * m_invExtent.x() * m_resolution.x() - 0.5f, p.y() * m_invExtent.y() * m_resolution.y() - 0.5f, p.z() * m_invExtent.z() * m_resolution.z() - 0.5f);
+        Point pNormalized(Normalize(p));
+        Point pSamples(pNormalized.x()  * m_resolution.x() - 0.5f, pNormalized.y()  * m_resolution.y() - 0.5f, pNormalized.z()  * m_resolution.z() - 0.5f);
         Pointi pi((int)floor(pSamples.x()), (int)floor(pSamples.y()), (int)floor(pSamples.z()));
         Vector d = pSamples - Point((float)pi.x(), (float)pi.y(), (float)pi.z());
 
