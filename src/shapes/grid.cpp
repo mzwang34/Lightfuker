@@ -1,5 +1,6 @@
 #include <lightwave.hpp>
 #include <fstream>
+#include <cstdint>
 
 namespace lightwave {
 
@@ -12,9 +13,37 @@ class GridVolume : public Shape {
     float invMaxDensity;
 
 public:
+    // GridVolume(const Properties &properties) {
+    //     m_multiplier = properties.get<float>("multiplier", 1.0f);
+    //     m_sigma_t = properties.get<float>("sigma_t", 1.f);
+
+    //     auto path = properties.get<std::filesystem::path>("filename");
+    //     std::ifstream input(path, std::ios::binary);
+    //     if (!input.is_open()) {
+    //         lightwave_throw("Error opening volume file: %s", path.string());
+    //     }
+
+    //     float fx, fy, fz;
+    //     input.read(reinterpret_cast<char*>(&fx), sizeof(float));
+    //     input.read(reinterpret_cast<char*>(&fy), sizeof(float));
+    //     input.read(reinterpret_cast<char*>(&fz), sizeof(float));
+    //     m_resolution = Vector3i((int)fx, (int)fy, (int)fz);
+
+    //     int voxelCount = m_resolution.product();
+    //     m_density.resize(voxelCount);
+    //     m_maxDensity = 0;
+    //     for (int i = 0; i < voxelCount; i++) {
+    //         float v;
+    //         input.read(reinterpret_cast<char*>(&v), sizeof(float));
+    //         m_density[i] = v * m_multiplier;
+    //         m_maxDensity = std::max(m_maxDensity, m_density[i]);
+    //     }
+    //     invMaxDensity = 1.f / m_maxDensity;
+    // }
+
     GridVolume(const Properties &properties) {
         m_multiplier = properties.get<float>("multiplier", 1.0f);
-        m_sigma_t = properties.get<float>("sigma_t", 1.f);
+        m_sigma_t    = properties.get<float>("sigma_t", 1.f);
 
         auto path = properties.get<std::filesystem::path>("filename");
         std::ifstream input(path, std::ios::binary);
@@ -22,22 +51,81 @@ public:
             lightwave_throw("Error opening volume file: %s", path.string());
         }
 
-        float fx, fy, fz;
-        input.read(reinterpret_cast<char*>(&fx), sizeof(float));
-        input.read(reinterpret_cast<char*>(&fy), sizeof(float));
-        input.read(reinterpret_cast<char*>(&fz), sizeof(float));
-        m_resolution = Vector3i((int)fx, (int)fy, (int)fz);
+        // ------------------------------------------------------------
+        // 1. Read magic
+        // ------------------------------------------------------------
+        char magic[3];
+        input.read(magic, 3);
+        if (magic[0] != 'V' || magic[1] != 'O' || magic[2] != 'L') {
+            lightwave_throw("Not a Mitsuba VOL file: %s", path.string());
+        }
 
-        int voxelCount = m_resolution.product();
+        // ------------------------------------------------------------
+        // 2. Read header
+        // ------------------------------------------------------------
+        uint8_t version;
+        input.read(reinterpret_cast<char*>(&version), sizeof(uint8_t));
+        if (version != 3) {
+            lightwave_throw("Unsupported VOL version %d", version);
+        }
+
+        int32_t type;
+        int32_t dimX, dimY, dimZ;
+        int32_t channels;
+
+        input.read(reinterpret_cast<char*>(&type),     sizeof(int32_t));
+        input.read(reinterpret_cast<char*>(&dimX),     sizeof(int32_t));
+        input.read(reinterpret_cast<char*>(&dimY),     sizeof(int32_t));
+        input.read(reinterpret_cast<char*>(&dimZ),     sizeof(int32_t));
+        input.read(reinterpret_cast<char*>(&channels), sizeof(int32_t));
+
+        if (type != 1) {
+            lightwave_throw("VOL file is not float32 (type=%d)", type);
+        }
+        if (channels != 1) {
+            lightwave_throw("Only single-channel volumes supported");
+        }
+
+        m_resolution = Vector3i(dimX, dimY, dimZ);
+
+        // ------------------------------------------------------------
+        // 3. Skip bounding box (6 floats)
+        // ------------------------------------------------------------
+        float bbox[6];
+        input.read(reinterpret_cast<char*>(bbox), sizeof(float) * 6);
+        
+        Point bboxMin(bbox[0], bbox[1], bbox[2]);
+        Point bboxMax(bbox[3], bbox[4], bbox[5]);
+
+        std::cout << "VOL BBOX min = (" 
+                << bboxMin.x() << ", "
+                << bboxMin.y() << ", "
+                << bboxMin.z() << ")  max = ("
+                << bboxMax.x() << ", "
+                << bboxMax.y() << ", "
+                << bboxMax.z() << ")" << std::endl;
+        // ------------------------------------------------------------
+        // 4. Read voxel data
+        // ------------------------------------------------------------
+        int voxelCount = dimX * dimY * dimZ;
         m_density.resize(voxelCount);
-        m_maxDensity = 0;
-        for (int i = 0; i < voxelCount; i++) {
+
+        m_maxDensity = 0.f;
+        for (int i = 0; i < voxelCount; ++i) {
             float v;
             input.read(reinterpret_cast<char*>(&v), sizeof(float));
-            m_density[i] = v * m_multiplier;
-            m_maxDensity = std::max(m_maxDensity, m_density[i]);
+            v *= m_multiplier;
+            m_density[i] = v;
+            m_maxDensity = std::max(m_maxDensity, v);
         }
-        invMaxDensity = 1.f / m_maxDensity;
+
+        if (m_maxDensity > 0.f) {
+            invMaxDensity = 1.f / m_maxDensity;
+        } else {
+            invMaxDensity = 0.f;
+        }
+        std::cout << "VOL resolution: " << dimX << " " << dimY << " " << dimZ << std::endl;
+        std::cout << "Max density: " << m_maxDensity << std::endl;
     }
 
     bool intersect(const Ray &ray, Intersection &its,
