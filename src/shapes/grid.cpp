@@ -11,6 +11,8 @@ class GridVolume : public Shape {
     std::vector<float> m_density;
     float m_maxDensity;
     float invMaxDensity;
+    Bounds m_bounds;
+    Vector m_invExtent;
 
 public:
     // GridVolume(const Properties &properties) {
@@ -94,16 +96,22 @@ public:
         float bbox[6];
         input.read(reinterpret_cast<char*>(bbox), sizeof(float) * 6);
         
-        Point bboxMin(bbox[0], bbox[1], bbox[2]);
-        Point bboxMax(bbox[3], bbox[4], bbox[5]);
+        Point pMin(bbox[0], bbox[1], bbox[2]);
+        Point pMax(bbox[3], bbox[4], bbox[5]);
+        m_bounds = Bounds(pMin, pMax);
+        m_invExtent = Vector(
+            1.f / (pMax.x() - pMin.x()),
+            1.f / (pMax.y() - pMin.y()),
+            1.f / (pMax.z() - pMin.z())
+        );
 
         std::cout << "VOL BBOX min = (" 
-                << bboxMin.x() << ", "
-                << bboxMin.y() << ", "
-                << bboxMin.z() << ")  max = ("
-                << bboxMax.x() << ", "
-                << bboxMax.y() << ", "
-                << bboxMax.z() << ")" << std::endl;
+                << pMin.x() << ", "
+                << pMin.y() << ", "
+                << pMin.z() << ")  max = ("
+                << pMax.x() << ", "
+                << pMax.y() << ", "
+                << pMax.z() << ")" << std::endl;
         // ------------------------------------------------------------
         // 4. Read voxel data
         // ------------------------------------------------------------
@@ -130,9 +138,10 @@ public:
 
     bool intersect(const Ray &ray, Intersection &its,
                    Sampler &rng) const override {
-        const Bounds bound{Point{0.f}, Point{1.f}};
+        // const Bounds bound{Point{0.f}, Point{1.f}};
         float t_min, t_max;
-        if (!bound.intersectP(ray, its.t, &t_min, &t_max))
+        // if (!bound.intersectP(ray, its.t, &t_min, &t_max))
+        if (!m_bounds.intersectP(ray, its.t, &t_min, &t_max))
             return false;
 
         float t = t_min;
@@ -145,7 +154,7 @@ public:
                 its.shadingNormal = -ray.direction; 
                 its.geometryNormal = -ray.direction;
                 its.tangent = Frame(its.shadingNormal).tangent;
-
+                // std::cout << "Volume hit!" << std::endl;
                 return true;
             }
         }
@@ -154,9 +163,10 @@ public:
 
     float transmittance(const Ray &ray, float tMax,
                         Sampler &rng) const override {
-        const Bounds bound{Point{0.f}, Point{1.f}};
+        // const Bounds bound{Point{0.f}, Point{1.f}};
         float t_min, t_max;
-        if (!bound.intersectP(ray, tMax, &t_min, &t_max))
+        // if (!bound.intersectP(ray, tMax, &t_min, &t_max))
+        if (!m_bounds.intersectP(ray, tMax, &t_min, &t_max))
             return 1.f;
 
         float Tr = 1.f, t = t_min;
@@ -176,7 +186,8 @@ public:
     }
 
     Bounds getBoundingBox() const override {
-        return Bounds::full();
+        // return Bounds::full();
+        return m_bounds;
     }
 
     Point getCentroid() const override {
@@ -203,7 +214,8 @@ private:
     }
 
     float getDensity(const Point &p) const {
-        Point pSamples(p.x() * m_resolution.x() - 0.5f, p.y() * m_resolution.y() - 0.5f, p.z() * m_resolution.z() - 0.5f);
+        // Point pSamples(p.x() * m_resolution.x() - 0.5f, p.y() * m_resolution.y() - 0.5f, p.z() * m_resolution.z() - 0.5f);
+        Point pSamples(p.x() * m_invExtent.x() * m_resolution.x() - 0.5f, p.y() * m_invExtent.y() * m_resolution.y() - 0.5f, p.z() * m_invExtent.z() * m_resolution.z() - 0.5f);
         Pointi pi((int)floor(pSamples.x()), (int)floor(pSamples.y()), (int)floor(pSamples.z()));
         Vector d = pSamples - Point((float)pi.x(), (float)pi.y(), (float)pi.z());
 
