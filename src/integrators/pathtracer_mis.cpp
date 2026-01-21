@@ -79,7 +79,7 @@ public:
                             if (trans > 0.f)
                                 c += light_mis * trans * throughput *
                                      its.evaluateBsdf(dSample.wi).value *
-                                     dSample.weight / pdf_light;
+                                     dSample.weight / lightSample.probability;
                         }
                     }
                 }
@@ -131,7 +131,7 @@ public:
                             if (trans > 0.f)
                                 c += trans * throughput *
                                      its.evaluateBsdf(dSample.wi).value *
-                                     dSample.weight / pdf_light;
+                                     dSample.weight / lightSample.probability;
                         }
                     }
                 }
