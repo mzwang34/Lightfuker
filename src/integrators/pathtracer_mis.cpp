@@ -43,14 +43,17 @@ public:
                     if (path_len == 0) {
                         c += its.evaluateEmission().value * throughput;
                     } else {
+                        Light *light = its.light();
                         float cosTheta =
                             std::abs(its.shadingNormal.dot(-_ray.direction));
                         float pdf_light = its.pdf * its.lightProbability *
                                           its.t * its.t /
                                           std::max(cosTheta, Epsilon);
-                        float mis_bsdf = pre_bsdf / (pre_bsdf + pdf_light);
-                        c += mis_bsdf * throughput *
-                             its.evaluateEmission().value;
+                        if (path_len <= (light->Bounce() + 1)){
+                            float mis_bsdf = pre_bsdf / (pre_bsdf + pdf_light);
+                            c += mis_bsdf * throughput *
+                            its.evaluateEmission().value;
+                        }
                     }
                 }
 
@@ -63,7 +66,7 @@ public:
                         const Light *light = lightSample.light;
                         DirectLightSample dSample =
                             light->sampleDirect(its.position, rng);
-                        if (!dSample.isInvalid()) {
+                        if (!dSample.isInvalid() && light->Bounce() >= path_len) {
                             Ray shadowRay{ its.position, dSample.wi };
 
                             float pdf_light =
@@ -122,7 +125,7 @@ public:
                         const Light *light = lightSample.light;
                         DirectLightSample dSample =
                             light->sampleDirect(its.position, rng);
-                        if (!dSample.isInvalid()) {
+                        if (!dSample.isInvalid() && light->Bounce() >= path_len) {
                             Ray shadowRay{ its.position, dSample.wi };
                             float pdf_light =
                                 dSample.pdf * lightSample.probability;
