@@ -204,7 +204,24 @@ struct pcg32 {
         return state != other.state || inc != other.inc;
     }
 
+    uint32_t UniformUInt32();
+    uint32_t UniformUInt32(uint32_t b) {
+        uint32_t threshold = (~b + 1u) % b;
+        while (true) {
+            uint32_t r = UniformUInt32();
+            if (r >= threshold) return r % b;
+        }
+    }
+
     uint64_t state; // RNG state.  All values are possible.
     uint64_t inc;   // Controls which RNG sequence (stream) is selected. Must
                     // *always* be odd.
 };
+
+inline uint32_t pcg32::UniformUInt32() {
+    uint64_t oldstate = state;
+    state = oldstate * PCG32_MULT + inc;
+    uint32_t xorshifted = (uint32_t)(((oldstate >> 18u) ^ oldstate) >> 27u);
+    uint32_t rot = (uint32_t)(oldstate >> 59u);
+    return (xorshifted >> rot) | (xorshifted << ((~rot + 1u) & 31));
+}
