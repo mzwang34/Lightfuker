@@ -35,8 +35,8 @@ public:
         if (sampleStride > 1) {
             Point2i pm(pixel.x() % maxHaltonResolution, pixel.y() % maxHaltonResolution);
             for (int i = 0; i < 2; i++) {
-                uint64_t dimOffset = (i == 0) ? inverseRadicalInverse(pm[i], 2, BaseExponents[i])
-                                              : inverseRadicalInverse(pm[i], 3, BaseExponents[i]);
+                uint64_t dimOffset = (i == 0) ? inverseRadicalInverse<2>(pm[i],BaseExponents[i])
+                                              : inverseRadicalInverse<3>(pm[i],BaseExponents[i]);
                 uint64_t multInv = multiplicativeInverse(sampleStride / BaseScales[i], BaseScales[i]);
                 m_haltonIndex += dimOffset * (sampleStride / BaseScales[i]) * multInv;
             }
@@ -49,12 +49,14 @@ public:
     float next() override { 
         int dim = m_dimension++;
         if (dim == 0) {
-            return (float)radicalInverse(2, m_haltonIndex >> BaseExponents[0]);
+            return (float)radicalInverse(0, m_haltonIndex >> BaseExponents[0]);
         }
         else if (dim == 1) {
-            return (float)radicalInverse(3, m_haltonIndex / BaseScales[1]);
+            return (float)radicalInverse(1, m_haltonIndex / BaseScales[1]);
         }
         else {
+            if (dim >= PrimeTableSize)
+                dim = 2 + (dim - 2) % (PrimeTableSize - 2);
             return scrambledRadicalInverse(dim, m_haltonIndex, permutationForDimension(dim));
         }
     }
@@ -89,29 +91,15 @@ private:
         *y = xp - (d * yp);
     }
 
-    uint64_t inverseRadicalInverse(uint64_t inverse, int base, int nDigits) {
+    template <int base>
+    uint64_t inverseRadicalInverse(uint64_t inverse, int nDigits) {
         uint64_t index = 0;
-        for (int i = 0; i < nDigits; i++) {
+        for (int i = 0; i < nDigits; ++i) {
             uint64_t digit = inverse % base;
             inverse /= base;
             index = index * base + digit;
         }
         return index;
-    }
-
-    float radicalInverse(int baseIndex, uint64_t a) {
-        int base = Primes[baseIndex];
-        float invBase = 1.f / base;
-        float invBaseM = 1.f;
-        uint64_t reversedDigits = 0;
-        while (a) {
-            uint64_t next = a / base;
-            uint64_t digit = a - next * base;
-            reversedDigits = reversedDigits * base + digit;
-            invBaseM *= invBase;
-            a = next;
-        }
-        return std::min(reversedDigits * invBaseM, 1.f - Epsilon);
     }
 
     const uint16_t *permutationForDimension(int dim) {
