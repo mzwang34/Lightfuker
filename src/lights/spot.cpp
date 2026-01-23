@@ -8,6 +8,7 @@ class SpotLight final : public Light {
     Vector m_direction;
     float m_angle;
     float m_falloffStart;
+    float m_temperature;
 
 public:
     SpotLight(const Properties &properties) : Light(properties) {
@@ -16,6 +17,7 @@ public:
         m_direction = properties.get<Vector>("direction").normalized();
         m_angle = properties.get<float>("angle", 30.0f);
         m_falloffStart = properties.get<float>("falloffStart", 30.f);
+        m_temperature = properties.get<float>("temperature", 6500.f);
     }
 
     DirectLightSample sampleDirect(const Point &origin,
@@ -35,7 +37,7 @@ public:
         if (cosFalloffStart > cosLight)
             falloff = (cosLight - cosTotal) / (cosFalloffStart - cosTotal);
 
-        Color weight = m_power * Inv4Pi * pow(falloff, 4) / dist2;
+        Color weight = Color::fromTemperature(m_temperature) * m_power * Inv4Pi * pow(falloff, 4) / dist2;
         return DirectLightSample{ w, weight, dist, 1.f };
     }
 
