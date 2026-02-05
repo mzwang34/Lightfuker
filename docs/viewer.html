@@ -1,0 +1,247 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>Disney BSDF Raw Viewer</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <style>
+        body {
+            background-color: #222;
+            color: #fff;
+            font-family: "Source Sans Pro", Helvetica, sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        h1 { font-weight: 300; margin-bottom: 20px; }
+
+        .viewer-container {
+            background: #333;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            width: 90%;
+            max-width: 800px;
+            text-align: center;
+        }
+
+        .image-display {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            background-color: #000;
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+            margin-bottom: 20px;
+            border: 1px solid #555;
+        }
+
+        .image-display img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+        }
+
+        .loader {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            color: #888;
+            font-size: 14px;
+            display: none;
+        }
+
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            padding: 10px;
+            background: #444;
+            border-radius: 6px;
+        }
+
+        .control-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        select {
+            padding: 8px 12px;
+            border-radius: 4px;
+            border: none;
+            background: #666;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .value-display {
+            font-family: monospace;
+            font-size: 1.2em;
+            color: #8cc9f0;
+            font-weight: bold;
+        }
+
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: #8cc9f0;
+            cursor: pointer;
+            margin-top: -8px;
+            box-shadow: 0 0 5px rgba(0,0,0,0.3);
+        }
+
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: #666;
+            border-radius: 2px;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 5px;
+        }
+        
+        button {
+            background: #555;
+            border: none;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover { background: #666; }
+
+    </style>
+</head>
+<body>
+
+    <h1>Disney BSDF Viewer</h1>
+
+    <div class="viewer-container">
+        <div class="image-display">
+            <div class="loader" id="loader">Loading...</div>
+            <img id="mainImage" src="" alt="Render Preview">
+        </div>
+
+        <div class="controls">
+            <div class="control-group">
+                <label for="paramSelect">Parameter:</label>
+                <select id="paramSelect">
+                    <option value="subsurface">Subsurface</option>
+                    <option value="metallic">Metallic</option>
+                    <option value="specular">Specular</option>
+                    <option value="specularTint">Specular Tint</option>
+                    <option value="specularTrans">Specular Trans</option>
+                    <option value="roughness">Roughness</option>
+                    <option value="anisotropic">Anisotropic</option>
+                    <option value="sheen">Sheen</option>
+                    <option value="sheenTint">Sheen Tint</option>
+                    <option value="clearcoat">Clearcoat</option>
+                    <option value="clearcoatGloss">Clearcoat Gloss</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <span>Value:</span>
+                <span id="valueDisplay" class="value-display">0.0</span>
+            </div>
+
+            <input type="range" id="slider" min="0" max="10" value="0" step="1">
+            
+            <div class="nav-buttons">
+                <button onclick="changeVal(-1)">&#9664; Prev</button>
+                <button onclick="changeVal(1)">Next &#9654;</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const IMAGE_PATH_PREFIX = "images/disney_total/disney_"; 
+        const IMAGE_EXTENSION = ".jpg"; 
+
+        const values = ["0.0", "0.1", "0.2", "0.3", "0.4", "0.5", "0.6", "0.7", "0.8", "0.9", "1.0"];
+
+        const paramSelect = document.getElementById('paramSelect');
+        const slider = document.getElementById('slider');
+        const valueDisplay = document.getElementById('valueDisplay');
+        const mainImage = document.getElementById('mainImage');
+        const loader = document.getElementById('loader');
+
+        const imageCache = {};
+
+        function updateImage() {
+            const param = paramSelect.value;
+            const stepIndex = parseInt(slider.value);
+            const val = values[stepIndex];
+
+            valueDisplay.textContent = val;
+
+            const filename = `${IMAGE_PATH_PREFIX}${param}_${val}${IMAGE_EXTENSION}`;
+
+            if (!imageCache[filename]) {
+                loader.style.display = 'block';
+            }
+
+            mainImage.src = filename;
+            
+            preloadCurrentParamSeries(param);
+        }
+
+        mainImage.onload = function() {
+            loader.style.display = 'none';
+            imageCache[mainImage.src] = true;
+        };
+
+        mainImage.onerror = function() {
+            loader.style.display = 'block';
+            loader.textContent = "Image not found";
+        }
+
+        function preloadCurrentParamSeries(param) {
+            values.forEach(val => {
+                const src = `${IMAGE_PATH_PREFIX}${param}_${val}${IMAGE_EXTENSION}`;
+                if (!imageCache[src]) {
+                    const img = new Image();
+                    img.src = src;
+                    img.onload = () => { imageCache[src] = true; };
+                }
+            });
+        }
+
+        window.changeVal = function(delta) {
+            let newVal = parseInt(slider.value) + delta;
+            if (newVal >= 0 && newVal <= 10) {
+                slider.value = newVal;
+                updateImage();
+            }
+        };
+
+        slider.addEventListener('input', updateImage);
+
+        paramSelect.addEventListener('change', () => {
+            updateImage();
+        });
+
+        updateImage();
+
+    </script>
+</body>
+</html>
